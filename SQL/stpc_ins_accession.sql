@@ -19,7 +19,7 @@ SET NOCOUNT ON
 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
 SET CONCAT_NULL_YIELDS_NULL OFF
 
-DECLARE @BatchId int, @AccessionId int, @errorMessage varchar(max), @errorCode varchar(4)
+DECLARE @BatchId int, @AccessionId int, @errorMessage varchar(max), @errorCode varchar(4), @successMessage varchar(max)
 
 
 -- Insert Batch
@@ -37,8 +37,11 @@ BEGIN
 		END CATCH
   		IF @@TRANCOUNT > 0 COMMIT
   		SELECT @BatchId = @@IDENTITY
+		
+		SELECT @successMessage = 'Added row to "Batch" for batch number ' + @batchNumber + ' (Id = ' + CAST(@BatchId AS varchar) + ').  '
 END ELSE
 	SELECT @BatchId = id FROM Batch WHERE batchNumber = @batchNumber
+	SELECT @successMessage = 'Row already exists for batch ' + @batchNumber + ' (Id =  ' + CAST(@BatchId AS varchar) + ').  '
 END
 
 -- Insert Accession
@@ -56,18 +59,20 @@ BEGIN
 		END CATCH
   		IF @@TRANCOUNT > 0 COMMIT
   		SELECT @AccessionId = @@IDENTITY
+		SELECT @successMessage = @successMessage + 'Added row to "Accession" for accession number' + @accessionNumber + ' (Id = ' + CAST(@AccessionId AS varchar) + ').'
 END ELSE
-	SELECT @BatchId = id FROM Batch WHERE batchNumber = @batchNumber
+	SELECT @AccessionId = id FROM Accession WHERE batchNumber = @batchNumber AND accessionNumber = @accessionNumber
+	SELECT @successMessage = @successMessage + 'Row already exists for accession ' + @accessionNumber + ' (Id = ' CAST(@AccessionId AS varchar) + ').'
 END
 
-
+SELECT @successMessage AS message, @BatchId AS BatchId, @AccessionId AS AccessionId
 
 RETURN
 
 --ERROR SECTION
 errorSection:
 
-SELECT @errorCode + ':  ' + @errorMessage AS ERROR
+SELECT @errorCode + ':  ' + @errorMessage AS message, @BatchId AS BatchId, @AccessionId AS AccessionId
 
 
 
