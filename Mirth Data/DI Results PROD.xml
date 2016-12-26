@@ -1,0 +1,198 @@
+<channel>
+  <id>0c344e8e-205e-4a40-afcd-a97b76c92097</id>
+  <name>DI Results PROD</name>
+  <description></description>
+  <enabled>true</enabled>
+  <version>2.2.0.5828</version>
+  <lastModified>
+    <time>1479317010350</time>
+    <timezone>America/Chicago</timezone>
+  </lastModified>
+  <revision>5</revision>
+  <sourceConnector>
+    <name>sourceConnector</name>
+    <properties>
+      <property name="DataType">File Reader</property>
+      <property name="FTPAnonymous">1</property>
+      <property name="autoDelete">1</property>
+      <property name="binary">0</property>
+      <property name="charsetEncoding">DEFAULT_ENCODING</property>
+      <property name="checkFileAge">1</property>
+      <property name="fileAge">1000</property>
+      <property name="fileFilter">*.hl7</property>
+      <property name="host">//Middlewareserver/c$/DI_Interfaces/Summit/Prod/Results</property>
+      <property name="ignoreDot">1</property>
+      <property name="moveToDirectory"></property>
+      <property name="moveToErrorDirectory">//Middlewareserver/DI_Interfaces/Summit/Prod/Results/Errors</property>
+      <property name="moveToPattern"></property>
+      <property name="passive">1</property>
+      <property name="password">anonymous</property>
+      <property name="pollingFrequency">1000</property>
+      <property name="pollingType">interval</property>
+      <property name="processBatchFiles">0</property>
+      <property name="regex">0</property>
+      <property name="scheme">file</property>
+      <property name="secure">1</property>
+      <property name="sortAttribute">date</property>
+      <property name="timeout">10000</property>
+      <property name="username">anonymous</property>
+      <property name="validateConnections">1</property>
+    </properties>
+    <transformer>
+      <steps>
+        <step>
+          <sequenceNumber>0</sequenceNumber>
+          <name>New Step</name>
+          <script>var barcode = msg[&apos;ORC&apos;][0][&apos;ORC.2&apos;][&apos;ORC.2.1&apos;].toString();
+var testCode = &apos;&apos;;
+var testResult = &apos;&apos;;
+var personnel = &apos;&apos;;
+var HPVFlag = &apos;N&apos;;
+var HPVResult = &apos;NEG&apos;;
+
+for each(obx in msg[&apos;OBX&apos;]){
+	testCode = obx[&apos;OBX.3&apos;][&apos;OBX.3.1&apos;].toString();
+	testResult = obx[&apos;OBX.4&apos;][&apos;OBX.4.1&apos;].toString().toUpperCase();
+	personnel = obx[&apos;OBX.15&apos;][&apos;OBX.15.1&apos;].toString();
+	summit_dbInsDiRslts(&apos;prod&apos;, messageObject.getId(), barcode, testCode, testResult, personnel);
+	if(testCode === &apos;02HPVOHR&apos; || testCode == &apos;02HPV16&apos; || testCode == &apos;02HPV18&apos;){
+		HPVFlag = &apos;Y&apos;;
+		if(testResult.substring(0,3) === &apos;POS&apos;){
+			HPVResult = &apos;POS&apos;;
+		}else if(testResult.substring(0,3) === &apos;INV&apos; ||
+			 	 testResult.substring(0,3) === &apos;IND&apos; ){
+			HPVResult = &apos;INV&apos;;
+		}
+	}
+}
+
+if(HPVFlag === &apos;Y&apos;){
+	testCode = &apos;02HPVALL&apos;;
+	testResult = HPVResult;
+	summit_dbInsDiRslts(&apos;prod&apos;, messageObject.getId(), barcode, testCode, testResult, personnel);
+}</script>
+          <type>JavaScript</type>
+          <data class="map">
+            <entry>
+              <string>Script</string>
+              <string>var barcode = msg[&apos;ORC&apos;][0][&apos;ORC.2&apos;][&apos;ORC.2.1&apos;].toString();
+var testCode = &apos;&apos;;
+var testResult = &apos;&apos;;
+var personnel = &apos;&apos;;
+var HPVFlag = &apos;N&apos;;
+var HPVResult = &apos;NEG&apos;;
+
+for each(obx in msg[&apos;OBX&apos;]){
+	testCode = obx[&apos;OBX.3&apos;][&apos;OBX.3.1&apos;].toString();
+	testResult = obx[&apos;OBX.4&apos;][&apos;OBX.4.1&apos;].toString().toUpperCase();
+	personnel = obx[&apos;OBX.15&apos;][&apos;OBX.15.1&apos;].toString();
+	summit_dbInsDiRslts(&apos;prod&apos;, messageObject.getId(), barcode, testCode, testResult, personnel);
+	if(testCode === &apos;02HPVOHR&apos; || testCode == &apos;02HPV16&apos; || testCode == &apos;02HPV18&apos;){
+		HPVFlag = &apos;Y&apos;;
+		if(testResult.substring(0,3) === &apos;POS&apos;){
+			HPVResult = &apos;POS&apos;;
+		}else if(testResult.substring(0,3) === &apos;INV&apos; ||
+			 	 testResult.substring(0,3) === &apos;IND&apos; ){
+			HPVResult = &apos;INV&apos;;
+		}
+	}
+}
+
+if(HPVFlag === &apos;Y&apos;){
+	testCode = &apos;02HPVALL&apos;;
+	testResult = HPVResult;
+	summit_dbInsDiRslts(&apos;prod&apos;, messageObject.getId(), barcode, testCode, testResult, personnel);
+}</string>
+            </entry>
+          </data>
+        </step>
+      </steps>
+      <inboundTemplate encoding="base64"></inboundTemplate>
+      <outboundTemplate encoding="base64"></outboundTemplate>
+      <inboundProtocol>HL7V2</inboundProtocol>
+      <outboundProtocol>HL7V2</outboundProtocol>
+      <inboundProperties>
+        <property name="convertLFtoCR">true</property>
+        <property name="handleRepetitions">false</property>
+        <property name="handleSubcomponents">false</property>
+        <property name="stripNamespaces">true</property>
+        <property name="useStrictParser">false</property>
+        <property name="useStrictValidation">false</property>
+      </inboundProperties>
+      <outboundProperties>
+        <property name="convertLFtoCR">true</property>
+        <property name="handleRepetitions">false</property>
+        <property name="handleSubcomponents">false</property>
+        <property name="stripNamespaces">true</property>
+        <property name="useStrictParser">false</property>
+        <property name="useStrictValidation">false</property>
+      </outboundProperties>
+    </transformer>
+    <filter>
+      <rules/>
+    </filter>
+    <transportName>File Reader</transportName>
+    <mode>SOURCE</mode>
+    <enabled>true</enabled>
+    <version>2.2.0.5828</version>
+  </sourceConnector>
+  <destinationConnectors>
+    <connector>
+      <name>Destination 1</name>
+      <properties>
+        <property name="DataType">JavaScript Writer</property>
+        <property name="host">sink</property>
+        <property name="script">//</property>
+      </properties>
+      <transformer>
+        <steps/>
+        <inboundProtocol>HL7V2</inboundProtocol>
+        <outboundProtocol>HL7V2</outboundProtocol>
+        <inboundProperties>
+          <property name="convertLFtoCR">true</property>
+          <property name="handleRepetitions">false</property>
+          <property name="handleSubcomponents">false</property>
+          <property name="stripNamespaces">true</property>
+          <property name="useStrictParser">false</property>
+          <property name="useStrictValidation">false</property>
+        </inboundProperties>
+        <outboundProperties>
+          <property name="convertLFtoCR">true</property>
+          <property name="handleRepetitions">false</property>
+          <property name="handleSubcomponents">false</property>
+          <property name="stripNamespaces">true</property>
+          <property name="useStrictParser">false</property>
+          <property name="useStrictValidation">false</property>
+        </outboundProperties>
+      </transformer>
+      <filter>
+        <rules/>
+      </filter>
+      <transportName>JavaScript Writer</transportName>
+      <mode>DESTINATION</mode>
+      <enabled>true</enabled>
+      <version>2.2.0.5828</version>
+    </connector>
+  </destinationConnectors>
+  <properties>
+    <property name="clearGlobalChannelMap">true</property>
+    <property name="dont_store_filtered">false</property>
+    <property name="encryptData">false</property>
+    <property name="error_messages_only">false</property>
+    <property name="initialState">started</property>
+    <property name="max_message_age">30</property>
+    <property name="store_messages">true</property>
+    <property name="synchronous">true</property>
+    <property name="transactional">false</property>
+  </properties>
+  <preprocessingScript>// Modify the message variable below to pre process data
+return message;</preprocessingScript>
+  <postprocessingScript>// This script executes once after a message has been processed
+return;</postprocessingScript>
+  <deployScript>// This script executes once when the channel is deployed
+// You only have access to the globalMap and globalChannelMap here to persist data
+return;</deployScript>
+  <shutdownScript>// This script executes once when the channel is undeployed
+// You only have access to the globalMap and globalChannelMap here to persist data
+return;</shutdownScript>
+</channel>
