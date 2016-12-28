@@ -5,14 +5,15 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE PROCEDURE stprc_ins_accession @batchNumber varchar(20), @accessionNumber varchar(20), @batchRunUser varchar(30)
+ALTER PROCEDURE stprc_ins_accession @batchNumber varchar(20), @accessionNumber varchar(20), @batchRunUser varchar(30)
 AS
 BEGIN
 
 --Testing
 /*
 DECLARE @batchNumber varchar(20), @accessionNumber varchar(20), @batchRunUser varchar(30)
-SELECT @batchNumber = 'WHC-16-107883', @accessionNumber = 'WHC-16-107883', @batchRunUser = 'srichmond'
+SELECT @batchNumber = '123456789', @accessionNumber = 'WHC-16-107883', @batchRunUser = 'srichmond'
+EXEC stprc_ins_accession '123456789', 'WHC-16-107883', 'srichmond'
 */
 
 SET NOCOUNT ON
@@ -20,7 +21,6 @@ SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
 SET CONCAT_NULL_YIELDS_NULL OFF
 
 DECLARE @BatchId int, @AccessionId int, @errorMessage varchar(max), @errorCode varchar(4), @successMessage varchar(max)
-
 
 -- Insert Batch
 IF NOT EXISTS(SELECT id FROM Batch WHERE batchNumber = @batchNumber)
@@ -40,12 +40,13 @@ BEGIN
 		
 		SELECT @successMessage = 'Added row to "Batch" for batch number ' + @batchNumber + ' (Id = ' + CAST(@BatchId AS varchar) + ').  '
 END ELSE
+BEGIN
 	SELECT @BatchId = id FROM Batch WHERE batchNumber = @batchNumber
 	SELECT @successMessage = 'Row already exists for batch ' + @batchNumber + ' (Id =  ' + CAST(@BatchId AS varchar) + ').  '
 END
 
 -- Insert Accession
-IF NOT EXISTS(SELECT id FROM Accession WHERE batchNumber = @batchNumber AND accessionNumber = @accessionNumber)
+IF NOT EXISTS(SELECT id FROM Accession WHERE BatchId = @BatchId AND accessionNumber = @accessionNumber)
 BEGIN
 		BEGIN TRANSACTION
 		BEGIN TRY
@@ -61,8 +62,9 @@ BEGIN
   		SELECT @AccessionId = @@IDENTITY
 		SELECT @successMessage = @successMessage + 'Added row to "Accession" for accession number' + @accessionNumber + ' (Id = ' + CAST(@AccessionId AS varchar) + ').'
 END ELSE
-	SELECT @AccessionId = id FROM Accession WHERE batchNumber = @batchNumber AND accessionNumber = @accessionNumber
-	SELECT @successMessage = @successMessage + 'Row already exists for accession ' + @accessionNumber + ' (Id = ' CAST(@AccessionId AS varchar) + ').'
+BEGIN
+	SELECT @AccessionId = id FROM Accession WHERE BatchId = @BatchId AND accessionNumber = @accessionNumber
+	SELECT @successMessage = @successMessage + 'Row already exists for accession ' + @accessionNumber + ' (Id = ' + CAST(@AccessionId AS varchar) + ').'
 END
 
 SELECT @successMessage AS message, @BatchId AS BatchId, @AccessionId AS AccessionId
@@ -73,8 +75,6 @@ RETURN
 errorSection:
 
 SELECT @errorCode + ':  ' + @errorMessage AS message, @BatchId AS BatchId, @AccessionId AS AccessionId
-
-
 
 END
 
