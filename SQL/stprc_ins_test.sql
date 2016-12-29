@@ -22,7 +22,7 @@ SET NOCOUNT ON
 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
 SET CONCAT_NULL_YIELDS_NULL OFF
 
-DECLARE @TestId int, @accessionNumber varchar(20), @errorMessage varchar(max), @errorCode varchar(4), @successMessage varchar(max)
+DECLARE @TestId int, @accessionNumber varchar(20), @errorMessage varchar(1000), @errorCode varchar(4), @successMessage varchar(1000)
 SELECT @accessionNumber = accessionNumber
 FROM Accession
 WHERE id = @AccessionId

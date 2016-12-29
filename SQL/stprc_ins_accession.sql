@@ -20,7 +20,7 @@ SET NOCOUNT ON
 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
 SET CONCAT_NULL_YIELDS_NULL OFF
 
-DECLARE @BatchId int, @AccessionId int, @errorMessage varchar(max), @errorCode varchar(4), @successMessage varchar(max)
+DECLARE @BatchId int, @AccessionId int, @errorMessage varchar(1000), @errorCode varchar(4), @successMessage varchar(1000)
 
 -- Insert Batch
 IF NOT EXISTS(SELECT id FROM Batch WHERE batchNumber = @batchNumber)

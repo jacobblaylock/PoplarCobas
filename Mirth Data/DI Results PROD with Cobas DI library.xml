@@ -1,0 +1,712 @@
+<channel version="3.4.2">
+  <id>0c344e8e-205e-4a40-afcd-a97b76c92097</id>
+  <nextMetaDataId>2</nextMetaDataId>
+  <name>DI Results PROD</name>
+  <description></description>
+  <enabled>true</enabled>
+  <lastModified>
+    <time>1483047531926</time>
+    <timezone>America/Denver</timezone>
+  </lastModified>
+  <revision>29</revision>
+  <sourceConnector version="3.4.2">
+    <metaDataId>0</metaDataId>
+    <name>sourceConnector</name>
+    <properties class="com.mirth.connect.connectors.file.FileReceiverProperties" version="3.4.2">
+      <pluginProperties/>
+      <pollConnectorProperties version="3.4.2">
+        <pollingType>INTERVAL</pollingType>
+        <pollOnStart>true</pollOnStart>
+        <pollingFrequency>1000</pollingFrequency>
+        <pollingHour>0</pollingHour>
+        <pollingMinute>0</pollingMinute>
+        <cronJobs/>
+        <pollConnectorPropertiesAdvanced>
+          <weekly>true</weekly>
+          <inactiveDays>
+            <boolean>false</boolean>
+            <boolean>false</boolean>
+            <boolean>false</boolean>
+            <boolean>false</boolean>
+            <boolean>false</boolean>
+            <boolean>false</boolean>
+            <boolean>false</boolean>
+            <boolean>false</boolean>
+          </inactiveDays>
+          <dayOfMonth>1</dayOfMonth>
+          <allDay>true</allDay>
+          <startingHour>8</startingHour>
+          <startingMinute>0</startingMinute>
+          <endingHour>17</endingHour>
+          <endingMinute>0</endingMinute>
+        </pollConnectorPropertiesAdvanced>
+      </pollConnectorProperties>
+      <sourceConnectorProperties version="3.4.2">
+        <responseVariable>Auto-generate (After source transformer)</responseVariable>
+        <respondAfterProcessing>true</respondAfterProcessing>
+        <processBatch>true</processBatch>
+        <firstResponse>false</firstResponse>
+        <processingThreads>1</processingThreads>
+        <resourceIds class="linked-hash-map">
+          <entry>
+            <string>Default Resource</string>
+            <string>[Default Resource]</string>
+          </entry>
+        </resourceIds>
+        <queueBufferSize>1000</queueBufferSize>
+      </sourceConnectorProperties>
+      <scheme>FILE</scheme>
+      <host>C:/Dev/Poplar/cobas-di-user-signoff/Mirth Data/Inbound</host>
+      <fileFilter>*.hl7</fileFilter>
+      <regex>false</regex>
+      <directoryRecursion>false</directoryRecursion>
+      <ignoreDot>true</ignoreDot>
+      <anonymous>true</anonymous>
+      <username>anonymous</username>
+      <password>anonymous</password>
+      <timeout>10000</timeout>
+      <secure>true</secure>
+      <passive>true</passive>
+      <validateConnection>true</validateConnection>
+      <afterProcessingAction>DELETE</afterProcessingAction>
+      <moveToDirectory></moveToDirectory>
+      <moveToFileName></moveToFileName>
+      <errorReadingAction>MOVE</errorReadingAction>
+      <errorResponseAction>MOVE</errorResponseAction>
+      <errorMoveToDirectory>//Middlewareserver/DI_Interfaces/Summit/Prod/Results/Errors</errorMoveToDirectory>
+      <errorMoveToFileName></errorMoveToFileName>
+      <checkFileAge>true</checkFileAge>
+      <fileAge>1000</fileAge>
+      <fileSizeMinimum>0</fileSizeMinimum>
+      <fileSizeMaximum></fileSizeMaximum>
+      <ignoreFileSizeMaximum>true</ignoreFileSizeMaximum>
+      <sortBy>date</sortBy>
+      <binary>false</binary>
+      <charsetEncoding>DEFAULT_ENCODING</charsetEncoding>
+    </properties>
+    <transformer version="3.4.2">
+      <steps>
+        <step>
+          <sequenceNumber>0</sequenceNumber>
+          <name>Original Logic</name>
+          <script>/*
+var barcode = msg[&apos;ORC&apos;][0][&apos;ORC.2&apos;][&apos;ORC.2.1&apos;].toString();
+var testCode = &apos;&apos;;
+var testResult = &apos;&apos;;
+var personnel = &apos;&apos;;
+var HPVFlag = &apos;N&apos;;
+var HPVResult = &apos;NEG&apos;;
+
+for each(obx in msg[&apos;OBX&apos;]){
+	testCode = obx[&apos;OBX.3&apos;][&apos;OBX.3.1&apos;].toString();
+	testResult = obx[&apos;OBX.4&apos;][&apos;OBX.4.1&apos;].toString().toUpperCase();
+	personnel = obx[&apos;OBX.15&apos;][&apos;OBX.15.1&apos;].toString();
+	//summit_dbInsDiRslts(&apos;prod&apos;, messageObject.getId(), barcode, testCode, testResult, personnel);
+	if(testCode === &apos;02HPVOHR&apos; || testCode == &apos;02HPV16&apos; || testCode == &apos;02HPV18&apos;){
+		HPVFlag = &apos;Y&apos;;
+		if(testResult.substring(0,3) === &apos;POS&apos;){
+			HPVResult = &apos;POS&apos;;
+		}else if(testResult.substring(0,3) === &apos;INV&apos; ||
+			 	 testResult.substring(0,3) === &apos;IND&apos; ){
+			HPVResult = &apos;INV&apos;;
+		}
+	}
+}
+
+if(HPVFlag === &apos;Y&apos;){
+	testCode = &apos;02HPVALL&apos;;
+	testResult = HPVResult;
+	//summit_dbInsDiRslts(&apos;prod&apos;, messageObject.getId(), barcode, testCode, testResult, personnel);
+}
+*/</script>
+          <type>JavaScript</type>
+          <data>
+            <entry>
+              <string>Script</string>
+              <string>/*
+var barcode = msg[&apos;ORC&apos;][0][&apos;ORC.2&apos;][&apos;ORC.2.1&apos;].toString();
+var testCode = &apos;&apos;;
+var testResult = &apos;&apos;;
+var personnel = &apos;&apos;;
+var HPVFlag = &apos;N&apos;;
+var HPVResult = &apos;NEG&apos;;
+
+for each(obx in msg[&apos;OBX&apos;]){
+	testCode = obx[&apos;OBX.3&apos;][&apos;OBX.3.1&apos;].toString();
+	testResult = obx[&apos;OBX.4&apos;][&apos;OBX.4.1&apos;].toString().toUpperCase();
+	personnel = obx[&apos;OBX.15&apos;][&apos;OBX.15.1&apos;].toString();
+	//summit_dbInsDiRslts(&apos;prod&apos;, messageObject.getId(), barcode, testCode, testResult, personnel);
+	if(testCode === &apos;02HPVOHR&apos; || testCode == &apos;02HPV16&apos; || testCode == &apos;02HPV18&apos;){
+		HPVFlag = &apos;Y&apos;;
+		if(testResult.substring(0,3) === &apos;POS&apos;){
+			HPVResult = &apos;POS&apos;;
+		}else if(testResult.substring(0,3) === &apos;INV&apos; ||
+			 	 testResult.substring(0,3) === &apos;IND&apos; ){
+			HPVResult = &apos;INV&apos;;
+		}
+	}
+}
+
+if(HPVFlag === &apos;Y&apos;){
+	testCode = &apos;02HPVALL&apos;;
+	testResult = HPVResult;
+	//summit_dbInsDiRslts(&apos;prod&apos;, messageObject.getId(), barcode, testCode, testResult, personnel);
+}
+*/</string>
+            </entry>
+          </data>
+        </step>
+        <step>
+          <sequenceNumber>1</sequenceNumber>
+          <name>Insert Accession</name>
+          <script>var dbEnvironment = &apos;prod&apos;;
+var batchNumber = msg[&apos;OBR&apos;][&apos;OBR.7&apos;][&apos;OBR.7.1&apos;].toString();
+var accessionNumber = msg[&apos;OBR&apos;][&apos;OBR.2&apos;][&apos;OBR.2.1&apos;].toString();
+var batchRunUser = msg[&apos;OBR&apos;][&apos;OBR.34&apos;][&apos;OBR.34.1&apos;].toString();
+
+var accInsResult = cobasInsertAccession(dbEnvironment, batchNumber, accessionNumber, batchRunUser);
+logger.info(&apos;accInsResult: &apos; + accInsResult.message);</script>
+          <type>JavaScript</type>
+          <data>
+            <entry>
+              <string>Script</string>
+              <string>var dbEnvironment = &apos;prod&apos;;
+var batchNumber = msg[&apos;OBR&apos;][&apos;OBR.7&apos;][&apos;OBR.7.1&apos;].toString();
+var accessionNumber = msg[&apos;OBR&apos;][&apos;OBR.2&apos;][&apos;OBR.2.1&apos;].toString();
+var batchRunUser = msg[&apos;OBR&apos;][&apos;OBR.34&apos;][&apos;OBR.34.1&apos;].toString();
+
+var accInsResult = cobasInsertAccession(dbEnvironment, batchNumber, accessionNumber, batchRunUser);
+logger.info(&apos;accInsResult: &apos; + accInsResult.message);</string>
+            </entry>
+          </data>
+        </step>
+        <step>
+          <sequenceNumber>2</sequenceNumber>
+          <name>Insert Test</name>
+          <script>for each(obx in msg[&apos;OBX&apos;]){
+	var code = obx[&apos;OBX.3&apos;][&apos;OBX.3.1&apos;].toString();
+	var result = obx[&apos;OBX.4&apos;][&apos;OBX.4.1&apos;].toString();
+	var testInsResult = cobasInsertTest(dbEnvironment, accInsResult.AccessionId, code, result)	
+	logger.info(&apos;testInsResult: &apos; + testInsResult.message);
+}</script>
+          <type>JavaScript</type>
+          <data>
+            <entry>
+              <string>Script</string>
+              <string>for each(obx in msg[&apos;OBX&apos;]){
+	var code = obx[&apos;OBX.3&apos;][&apos;OBX.3.1&apos;].toString();
+	var result = obx[&apos;OBX.4&apos;][&apos;OBX.4.1&apos;].toString();
+	var testInsResult = cobasInsertTest(dbEnvironment, accInsResult.AccessionId, code, result)	
+	logger.info(&apos;testInsResult: &apos; + testInsResult.message);
+}</string>
+            </entry>
+          </data>
+        </step>
+      </steps>
+      <inboundTemplate encoding="base64"></inboundTemplate>
+      <outboundTemplate encoding="base64"></outboundTemplate>
+      <inboundDataType>HL7V2</inboundDataType>
+      <outboundDataType>HL7V2</outboundDataType>
+      <inboundProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2DataTypeProperties" version="3.4.2">
+        <serializationProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2SerializationProperties" version="3.4.2">
+          <handleRepetitions>false</handleRepetitions>
+          <handleSubcomponents>false</handleSubcomponents>
+          <useStrictParser>false</useStrictParser>
+          <useStrictValidation>false</useStrictValidation>
+          <stripNamespaces>true</stripNamespaces>
+          <segmentDelimiter>\r</segmentDelimiter>
+          <convertLineBreaks>true</convertLineBreaks>
+        </serializationProperties>
+        <deserializationProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2DeserializationProperties" version="3.4.2">
+          <useStrictParser>false</useStrictParser>
+          <useStrictValidation>false</useStrictValidation>
+          <segmentDelimiter>\r</segmentDelimiter>
+        </deserializationProperties>
+        <batchProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2BatchProperties" version="3.4.2">
+          <splitType>MSH_Segment</splitType>
+          <batchScript></batchScript>
+        </batchProperties>
+        <responseGenerationProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2ResponseGenerationProperties" version="3.4.2">
+          <segmentDelimiter>\r</segmentDelimiter>
+          <successfulACKCode>AA</successfulACKCode>
+          <successfulACKMessage></successfulACKMessage>
+          <errorACKCode>AE</errorACKCode>
+          <errorACKMessage>An Error Occurred Processing Message.</errorACKMessage>
+          <rejectedACKCode>AR</rejectedACKCode>
+          <rejectedACKMessage>Message Rejected.</rejectedACKMessage>
+          <msh15ACKAccept>false</msh15ACKAccept>
+          <dateFormat>yyyyMMddHHmmss</dateFormat>
+        </responseGenerationProperties>
+        <responseValidationProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2ResponseValidationProperties" version="3.4.2">
+          <successfulACKCode>AA,CA</successfulACKCode>
+          <errorACKCode>AE,CE</errorACKCode>
+          <rejectedACKCode>AR,CR</rejectedACKCode>
+          <validateMessageControlId>false</validateMessageControlId>
+          <originalMessageControlId>Destination_Encoded</originalMessageControlId>
+          <originalIdMapVariable></originalIdMapVariable>
+        </responseValidationProperties>
+      </inboundProperties>
+      <outboundProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2DataTypeProperties" version="3.4.2">
+        <serializationProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2SerializationProperties" version="3.4.2">
+          <handleRepetitions>false</handleRepetitions>
+          <handleSubcomponents>false</handleSubcomponents>
+          <useStrictParser>false</useStrictParser>
+          <useStrictValidation>false</useStrictValidation>
+          <stripNamespaces>true</stripNamespaces>
+          <segmentDelimiter>\r</segmentDelimiter>
+          <convertLineBreaks>true</convertLineBreaks>
+        </serializationProperties>
+        <deserializationProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2DeserializationProperties" version="3.4.2">
+          <useStrictParser>false</useStrictParser>
+          <useStrictValidation>false</useStrictValidation>
+          <segmentDelimiter>\r</segmentDelimiter>
+        </deserializationProperties>
+        <batchProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2BatchProperties" version="3.4.2">
+          <splitType>MSH_Segment</splitType>
+          <batchScript></batchScript>
+        </batchProperties>
+        <responseGenerationProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2ResponseGenerationProperties" version="3.4.2">
+          <segmentDelimiter>\r</segmentDelimiter>
+          <successfulACKCode>AA</successfulACKCode>
+          <successfulACKMessage></successfulACKMessage>
+          <errorACKCode>AE</errorACKCode>
+          <errorACKMessage>An Error Occurred Processing Message.</errorACKMessage>
+          <rejectedACKCode>AR</rejectedACKCode>
+          <rejectedACKMessage>Message Rejected.</rejectedACKMessage>
+          <msh15ACKAccept>false</msh15ACKAccept>
+          <dateFormat>yyyyMMddHHmmss</dateFormat>
+        </responseGenerationProperties>
+        <responseValidationProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2ResponseValidationProperties" version="3.4.2">
+          <successfulACKCode>AA,CA</successfulACKCode>
+          <errorACKCode>AE,CE</errorACKCode>
+          <rejectedACKCode>AR,CR</rejectedACKCode>
+          <validateMessageControlId>false</validateMessageControlId>
+          <originalMessageControlId>Destination_Encoded</originalMessageControlId>
+          <originalIdMapVariable></originalIdMapVariable>
+        </responseValidationProperties>
+      </outboundProperties>
+    </transformer>
+    <filter version="3.4.2">
+      <rules/>
+    </filter>
+    <transportName>File Reader</transportName>
+    <mode>SOURCE</mode>
+    <enabled>true</enabled>
+    <waitForPrevious>true</waitForPrevious>
+  </sourceConnector>
+  <destinationConnectors>
+    <connector version="3.4.2">
+      <metaDataId>1</metaDataId>
+      <name>Destination 1</name>
+      <properties class="com.mirth.connect.connectors.js.JavaScriptDispatcherProperties" version="3.4.2">
+        <pluginProperties/>
+        <destinationConnectorProperties version="3.4.2">
+          <queueEnabled>false</queueEnabled>
+          <sendFirst>false</sendFirst>
+          <retryIntervalMillis>10000</retryIntervalMillis>
+          <regenerateTemplate>false</regenerateTemplate>
+          <retryCount>0</retryCount>
+          <rotate>false</rotate>
+          <includeFilterTransformer>false</includeFilterTransformer>
+          <threadCount>1</threadCount>
+          <validateResponse>false</validateResponse>
+          <resourceIds class="linked-hash-map">
+            <entry>
+              <string>Default Resource</string>
+              <string>[Default Resource]</string>
+            </entry>
+          </resourceIds>
+          <queueBufferSize>1000</queueBufferSize>
+        </destinationConnectorProperties>
+        <script>//</script>
+      </properties>
+      <transformer version="3.4.2">
+        <steps/>
+        <inboundDataType>HL7V2</inboundDataType>
+        <outboundDataType>HL7V2</outboundDataType>
+        <inboundProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2DataTypeProperties" version="3.4.2">
+          <serializationProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2SerializationProperties" version="3.4.2">
+            <handleRepetitions>false</handleRepetitions>
+            <handleSubcomponents>false</handleSubcomponents>
+            <useStrictParser>false</useStrictParser>
+            <useStrictValidation>false</useStrictValidation>
+            <stripNamespaces>true</stripNamespaces>
+            <segmentDelimiter>\r</segmentDelimiter>
+            <convertLineBreaks>true</convertLineBreaks>
+          </serializationProperties>
+          <deserializationProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2DeserializationProperties" version="3.4.2">
+            <useStrictParser>false</useStrictParser>
+            <useStrictValidation>false</useStrictValidation>
+            <segmentDelimiter>\r</segmentDelimiter>
+          </deserializationProperties>
+          <batchProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2BatchProperties" version="3.4.2">
+            <splitType>MSH_Segment</splitType>
+            <batchScript></batchScript>
+          </batchProperties>
+          <responseGenerationProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2ResponseGenerationProperties" version="3.4.2">
+            <segmentDelimiter>\r</segmentDelimiter>
+            <successfulACKCode>AA</successfulACKCode>
+            <successfulACKMessage></successfulACKMessage>
+            <errorACKCode>AE</errorACKCode>
+            <errorACKMessage>An Error Occurred Processing Message.</errorACKMessage>
+            <rejectedACKCode>AR</rejectedACKCode>
+            <rejectedACKMessage>Message Rejected.</rejectedACKMessage>
+            <msh15ACKAccept>false</msh15ACKAccept>
+            <dateFormat>yyyyMMddHHmmss</dateFormat>
+          </responseGenerationProperties>
+          <responseValidationProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2ResponseValidationProperties" version="3.4.2">
+            <successfulACKCode>AA,CA</successfulACKCode>
+            <errorACKCode>AE,CE</errorACKCode>
+            <rejectedACKCode>AR,CR</rejectedACKCode>
+            <validateMessageControlId>false</validateMessageControlId>
+            <originalMessageControlId>Destination_Encoded</originalMessageControlId>
+            <originalIdMapVariable></originalIdMapVariable>
+          </responseValidationProperties>
+        </inboundProperties>
+        <outboundProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2DataTypeProperties" version="3.4.2">
+          <serializationProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2SerializationProperties" version="3.4.2">
+            <handleRepetitions>false</handleRepetitions>
+            <handleSubcomponents>false</handleSubcomponents>
+            <useStrictParser>false</useStrictParser>
+            <useStrictValidation>false</useStrictValidation>
+            <stripNamespaces>true</stripNamespaces>
+            <segmentDelimiter>\r</segmentDelimiter>
+            <convertLineBreaks>true</convertLineBreaks>
+          </serializationProperties>
+          <deserializationProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2DeserializationProperties" version="3.4.2">
+            <useStrictParser>false</useStrictParser>
+            <useStrictValidation>false</useStrictValidation>
+            <segmentDelimiter>\r</segmentDelimiter>
+          </deserializationProperties>
+          <batchProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2BatchProperties" version="3.4.2">
+            <splitType>MSH_Segment</splitType>
+            <batchScript></batchScript>
+          </batchProperties>
+          <responseGenerationProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2ResponseGenerationProperties" version="3.4.2">
+            <segmentDelimiter>\r</segmentDelimiter>
+            <successfulACKCode>AA</successfulACKCode>
+            <successfulACKMessage></successfulACKMessage>
+            <errorACKCode>AE</errorACKCode>
+            <errorACKMessage>An Error Occurred Processing Message.</errorACKMessage>
+            <rejectedACKCode>AR</rejectedACKCode>
+            <rejectedACKMessage>Message Rejected.</rejectedACKMessage>
+            <msh15ACKAccept>false</msh15ACKAccept>
+            <dateFormat>yyyyMMddHHmmss</dateFormat>
+          </responseGenerationProperties>
+          <responseValidationProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2ResponseValidationProperties" version="3.4.2">
+            <successfulACKCode>AA,CA</successfulACKCode>
+            <errorACKCode>AE,CE</errorACKCode>
+            <rejectedACKCode>AR,CR</rejectedACKCode>
+            <validateMessageControlId>false</validateMessageControlId>
+            <originalMessageControlId>Destination_Encoded</originalMessageControlId>
+            <originalIdMapVariable></originalIdMapVariable>
+          </responseValidationProperties>
+        </outboundProperties>
+      </transformer>
+      <responseTransformer version="3.4.2">
+        <steps/>
+        <inboundDataType>HL7V2</inboundDataType>
+        <outboundDataType>HL7V2</outboundDataType>
+        <inboundProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2DataTypeProperties" version="3.4.2">
+          <serializationProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2SerializationProperties" version="3.4.2">
+            <handleRepetitions>false</handleRepetitions>
+            <handleSubcomponents>false</handleSubcomponents>
+            <useStrictParser>false</useStrictParser>
+            <useStrictValidation>false</useStrictValidation>
+            <stripNamespaces>true</stripNamespaces>
+            <segmentDelimiter>\r</segmentDelimiter>
+            <convertLineBreaks>true</convertLineBreaks>
+          </serializationProperties>
+          <deserializationProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2DeserializationProperties" version="3.4.2">
+            <useStrictParser>false</useStrictParser>
+            <useStrictValidation>false</useStrictValidation>
+            <segmentDelimiter>\r</segmentDelimiter>
+          </deserializationProperties>
+          <batchProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2BatchProperties" version="3.4.2">
+            <splitType>MSH_Segment</splitType>
+            <batchScript></batchScript>
+          </batchProperties>
+          <responseGenerationProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2ResponseGenerationProperties" version="3.4.2">
+            <segmentDelimiter>\r</segmentDelimiter>
+            <successfulACKCode>AA</successfulACKCode>
+            <successfulACKMessage></successfulACKMessage>
+            <errorACKCode>AE</errorACKCode>
+            <errorACKMessage>An Error Occurred Processing Message.</errorACKMessage>
+            <rejectedACKCode>AR</rejectedACKCode>
+            <rejectedACKMessage>Message Rejected.</rejectedACKMessage>
+            <msh15ACKAccept>false</msh15ACKAccept>
+            <dateFormat>yyyyMMddHHmmss</dateFormat>
+          </responseGenerationProperties>
+          <responseValidationProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2ResponseValidationProperties" version="3.4.2">
+            <successfulACKCode>AA,CA</successfulACKCode>
+            <errorACKCode>AE,CE</errorACKCode>
+            <rejectedACKCode>AR,CR</rejectedACKCode>
+            <validateMessageControlId>false</validateMessageControlId>
+            <originalMessageControlId>Destination_Encoded</originalMessageControlId>
+            <originalIdMapVariable></originalIdMapVariable>
+          </responseValidationProperties>
+        </inboundProperties>
+        <outboundProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2DataTypeProperties" version="3.4.2">
+          <serializationProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2SerializationProperties" version="3.4.2">
+            <handleRepetitions>false</handleRepetitions>
+            <handleSubcomponents>false</handleSubcomponents>
+            <useStrictParser>false</useStrictParser>
+            <useStrictValidation>false</useStrictValidation>
+            <stripNamespaces>true</stripNamespaces>
+            <segmentDelimiter>\r</segmentDelimiter>
+            <convertLineBreaks>true</convertLineBreaks>
+          </serializationProperties>
+          <deserializationProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2DeserializationProperties" version="3.4.2">
+            <useStrictParser>false</useStrictParser>
+            <useStrictValidation>false</useStrictValidation>
+            <segmentDelimiter>\r</segmentDelimiter>
+          </deserializationProperties>
+          <batchProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2BatchProperties" version="3.4.2">
+            <splitType>MSH_Segment</splitType>
+            <batchScript></batchScript>
+          </batchProperties>
+          <responseGenerationProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2ResponseGenerationProperties" version="3.4.2">
+            <segmentDelimiter>\r</segmentDelimiter>
+            <successfulACKCode>AA</successfulACKCode>
+            <successfulACKMessage></successfulACKMessage>
+            <errorACKCode>AE</errorACKCode>
+            <errorACKMessage>An Error Occurred Processing Message.</errorACKMessage>
+            <rejectedACKCode>AR</rejectedACKCode>
+            <rejectedACKMessage>Message Rejected.</rejectedACKMessage>
+            <msh15ACKAccept>false</msh15ACKAccept>
+            <dateFormat>yyyyMMddHHmmss</dateFormat>
+          </responseGenerationProperties>
+          <responseValidationProperties class="com.mirth.connect.plugins.datatypes.hl7v2.HL7v2ResponseValidationProperties" version="3.4.2">
+            <successfulACKCode>AA,CA</successfulACKCode>
+            <errorACKCode>AE,CE</errorACKCode>
+            <rejectedACKCode>AR,CR</rejectedACKCode>
+            <validateMessageControlId>false</validateMessageControlId>
+            <originalMessageControlId>Destination_Encoded</originalMessageControlId>
+            <originalIdMapVariable></originalIdMapVariable>
+          </responseValidationProperties>
+        </outboundProperties>
+      </responseTransformer>
+      <filter version="3.4.2">
+        <rules/>
+      </filter>
+      <transportName>JavaScript Writer</transportName>
+      <mode>DESTINATION</mode>
+      <enabled>true</enabled>
+      <waitForPrevious>true</waitForPrevious>
+    </connector>
+  </destinationConnectors>
+  <preprocessingScript>// Modify the message variable below to pre process data
+return message;</preprocessingScript>
+  <postprocessingScript>// This script executes once after a message has been processed
+return;</postprocessingScript>
+  <deployScript>// This script executes once when the channel is deployed
+// You only have access to the globalMap and globalChannelMap here to persist data
+return;</deployScript>
+  <undeployScript>// This script executes once when the channel is undeployed
+// You only have access to the globalMap and globalChannelMap here to persist data
+return;</undeployScript>
+  <properties version="3.4.2">
+    <clearGlobalChannelMap>true</clearGlobalChannelMap>
+    <messageStorageMode>DEVELOPMENT</messageStorageMode>
+    <encryptData>false</encryptData>
+    <removeContentOnCompletion>false</removeContentOnCompletion>
+    <removeOnlyFilteredOnCompletion>false</removeOnlyFilteredOnCompletion>
+    <removeAttachmentsOnCompletion>false</removeAttachmentsOnCompletion>
+    <initialState>STARTED</initialState>
+    <storeAttachments>false</storeAttachments>
+    <tags class="linked-hash-set"/>
+    <metaDataColumns>
+      <metaDataColumn>
+        <name>SOURCE</name>
+        <type>STRING</type>
+        <mappingName>mirth_source</mappingName>
+      </metaDataColumn>
+      <metaDataColumn>
+        <name>TYPE</name>
+        <type>STRING</type>
+        <mappingName>mirth_type</mappingName>
+      </metaDataColumn>
+    </metaDataColumns>
+    <attachmentProperties version="3.4.2">
+      <type>None</type>
+      <properties/>
+    </attachmentProperties>
+    <pruneMetaDataDays>30</pruneMetaDataDays>
+    <archiveEnabled>true</archiveEnabled>
+    <resourceIds class="linked-hash-map">
+      <entry>
+        <string>Default Resource</string>
+        <string>[Default Resource]</string>
+      </entry>
+    </resourceIds>
+  </properties>
+  <codeTemplateLibraries>
+    <codeTemplateLibrary version="3.4.2">
+      <id>7aa58d28-c700-40da-b3b3-6ca4de887aef</id>
+      <name>Cobas DI</name>
+      <revision>4</revision>
+      <lastModified>
+        <time>1483047517199</time>
+        <timezone>America/Denver</timezone>
+      </lastModified>
+      <description></description>
+      <includeNewChannels>false</includeNewChannels>
+      <enabledChannelIds>
+        <string>0c344e8e-205e-4a40-afcd-a97b76c92097</string>
+      </enabledChannelIds>
+      <disabledChannelIds>
+        <string>2d6afe85-f352-42c5-b5ad-846010d94930</string>
+        <string>b5774004-bd17-41f5-ab82-1826c11e4b69</string>
+        <string>57c575a0-28e2-4df8-9f30-8f59bd85de48</string>
+        <string>f09425cb-d431-4213-af0d-340c72773c69</string>
+        <string>83f8b309-d537-4350-8b3e-66d1b4615963</string>
+      </disabledChannelIds>
+      <codeTemplates>
+        <codeTemplate version="3.4.2">
+          <id>5fe87529-74a4-46a0-9210-8d24b6cbcd9e</id>
+          <name>DB Connection - CobasDI</name>
+          <revision>4</revision>
+          <lastModified>
+            <time>1483039731829</time>
+            <timezone>America/Denver</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>GLOBAL_DEPLOY</contextType>
+              <contextType>GLOBAL_UNDEPLOY</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>CHANNEL_ATTACHMENT</contextType>
+              <contextType>CHANNEL_BATCH</contextType>
+              <contextType>GLOBAL_POSTPROCESSOR</contextType>
+              <contextType>GLOBAL_PREPROCESSOR</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>CHANNEL_POSTPROCESSOR</contextType>
+              <contextType>CHANNEL_DEPLOY</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>CHANNEL_UNDEPLOY</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>CHANNEL_PREPROCESSOR</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Database connection to CobasDI
+
+	@param {Any} environment - Describes the db being connected to (test or production)
+	@return {Any} - A database connection object.
+*/
+function dbConnCobasDI(environment) {
+	if(environment == &apos;prod&apos;){
+		var dbConn = DatabaseConnectionFactory.createDatabaseConnection(&apos;net.sourceforge.jtds.jdbc.Driver&apos;, &apos;jdbc:jtds:sqlserver://localhost:1433/CobasDI&apos;, &apos;PMT&apos;, &apos;PMT@Mirth1&apos;);
+	}else{
+		var dbConn = DatabaseConnectionFactory.createDatabaseConnection(&apos;net.sourceforge.jtds.jdbc.Driver&apos;, &apos;jdbc:jtds:sqlserver://localhost:1433/CobasDI&apos;, &apos;PMT&apos;, &apos;PMT@Mirth1&apos;);
+	}
+	return dbConn;
+}</code>
+        </codeTemplate>
+        <codeTemplate version="3.4.2">
+          <id>fff6801c-e3fb-4e3a-9d9d-b874cd420497</id>
+          <name>Insert Accession</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1483047517204</time>
+            <timezone>America/Denver</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Modify the description here. Modify the function name and parameters as needed. One function per
+	template is recommended; create a new code template for each new function.
+
+	@param {Any} dbEnvironment - Describes the db being connected to (test or production)
+	@param {Any} batchNumber - Number identifying the Cobas Batch that was released
+	@param {Any} accessionNumber - Accession Number of the message
+	@param {Any} batchRunUser - User who ran the initial tests on the Cobas
+	@return {Any}  - Object containing the status message of the stprc and the ID&apos;s inserted/referenced for the Batch and Accession tables
+*/
+function cobasInsertAccession(dbEnvironment, batchNumber, accessionNumber, batchRunUser){
+	
+	var dbConn = dbConnCobasDI(dbEnvironment);
+
+	var procResult;
+	var sql = &quot;EXEC stprc_ins_accession &apos;&quot; + batchNumber + &quot;&apos;, &apos;&quot; + accessionNumber + &quot;&apos;, &apos;&quot; + batchRunUser + &quot;&apos;&quot;;
+	logger.info(&apos;sql = &apos; + sql);
+	var res = dbConn.executeCachedQuery(sql);
+	while(res.next()){
+		procResult = {
+			message: res.getString(&apos;message&apos;),
+			BatchId: res.getString(&apos;BatchId&apos;),
+			AccessionId: res.getString(&apos;AccessionId&apos;)
+		}
+	}		
+	if(procResult.message.toUpperCase().indexOf(&apos;ERROR&apos;) &gt; -1){
+		throw(&apos;ERROR INSERTING ACCESSION:  &apos; + procResult.message);
+	}else{
+		return procResult;		
+	}
+}</code>
+        </codeTemplate>
+        <codeTemplate version="3.4.2">
+          <id>7eb89345-fa81-473c-aaee-01dda0e84b94</id>
+          <name>Insert Test</name>
+          <revision>1</revision>
+          <lastModified>
+            <time>1483047517234</time>
+            <timezone>America/Denver</timezone>
+          </lastModified>
+          <type>FUNCTION</type>
+          <contextSet>
+            <delegate>
+              <contextType>SOURCE_RECEIVER</contextType>
+              <contextType>DESTINATION_RESPONSE_TRANSFORMER</contextType>
+              <contextType>SOURCE_FILTER_TRANSFORMER</contextType>
+              <contextType>DESTINATION_DISPATCHER</contextType>
+              <contextType>DESTINATION_FILTER_TRANSFORMER</contextType>
+            </delegate>
+          </contextSet>
+          <code>/**
+	Modify the description here. Modify the function name and parameters as needed. One function per
+	template is recommended; create a new code template for each new function.
+
+	@param {Any} dbEnvironment - Describes the db being connected to (test or production)
+	@param {Any} AccessionId - Id of the Accession table the test results are for
+	@param {Any} code - Cobas test code
+	@param {Any} result - Cobas Result
+	@return {Any} - Object containing the status message of the stprc and the Test ID Inserted/referenced
+*/
+function cobasInsertTest(dbEnvironment, AccessionId, code, result){
+	
+	var dbConn = dbConnCobasDI(dbEnvironment);
+	var procResult;
+	var sql = &quot;EXEC stprc_ins_test &quot; + AccessionId + &quot;, &apos;&quot; + code + &quot;&apos;, &apos;&quot; + result + &quot;&apos;&quot;;
+	logger.info(&apos;sql = &apos; + sql);	
+	var res = dbConn.executeCachedQuery(sql);
+	while(res.next()){
+		procResult = {
+			message: res.getString(&apos;message&apos;),
+			TestId: res.getString(&apos;TestId&apos;)
+		}
+	}
+
+	if(procResult.message.toUpperCase().indexOf(&apos;ERROR&apos;) &gt; -1){
+		throw(&apos;ERROR INSERTING TEST:  &apos; + procResult.message);
+	}else{
+		return procResult;		
+	}
+
+	
+}</code>
+        </codeTemplate>
+      </codeTemplates>
+    </codeTemplateLibrary>
+  </codeTemplateLibraries>
+</channel>
