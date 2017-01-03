@@ -8,3 +8,22 @@
         </div>
     </div>
 </header>
+<body>
+    <div class="container-fluid">
+        <h2>Select Batch To Review</h2>
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Select Batch
+            <span class="caret"></span></button>
+            <ul class="dropdown-menu">
+                <li *ngFor="let batch of batchList"><a href="#">{{ batch.batchNumber }}</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div>
+        <h2>Batch Details</h2>
+        <button class="btn btn-primary" (click)="getBatchDetail()">Get Batch Details</button>
+        <p *ngFor="let b of batchDetails">{{ b.accessionNumber }} - {{ b.code }}: {{ b.result }}</p>
+    </div>
+
+</body>
