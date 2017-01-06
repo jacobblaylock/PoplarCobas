@@ -11,6 +11,7 @@ import { Batch } from './batch';
 })
 export class AppComponent implements OnInit  {
     batchList: Batch[];
+    selectedBatch: string;
     batchDetails: any[];
     errorMessage: string;
 
@@ -31,9 +32,9 @@ export class AppComponent implements OnInit  {
     }
 
     getBatchDetail() {
-        this._mssql.getBatchDetail()
+        this._mssql.getBatchDetail(this.selectedBatch)
         .subscribe(
-            data => this.batchDetails = data,
+            data => this.batchDetails = data.details,
             error => this.errorMessage = <any>error
         )
     }

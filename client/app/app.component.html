@@ -10,20 +10,29 @@
 </header>
 <body>
     <div class="container-fluid">
-        <h2>Select Batch To Review</h2>
-        <div class="dropdown">
-            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Select Batch
-            <span class="caret"></span></button>
-            <ul class="dropdown-menu">
-                <li *ngFor="let batch of batchList"><a href="#">{{ batch.batchNumber }}</a></li>
-            </ul>
-        </div>
+        <h2>Batch Review</h2>
+        <form>
+            <div class="form-group">
+                <label for="batches">Select a batch to review:</label>
+                <select name="batches" class="form-control" id="batches" [(ngModel)]="selectedBatch">
+                    <option *ngFor="let batch of batchList" [value]="batch.batchNumber">{{ batch.batchNumber }}</option>
+                </select>
+            </div>
+        </form>
     </div>
 
-    <div>
-        <h2>Batch Details</h2>
+    <div *ngIf="selectedBatch" class="container-fluid">
+        <h2>Batch Details for {{ selectedBatch }}</h2>
         <button class="btn btn-primary" (click)="getBatchDetail()">Get Batch Details</button>
-        <p *ngFor="let b of batchDetails">{{ b.accessionNumber }} - {{ b.code }}: {{ b.result }}</p>
+        <div *ngFor="let b of batchDetails" class="row">
+            <div class="col-md-2">{{ b.accessionNumber }}</div>
+            <div class="col-md-10">
+                <div class="row" *ngFor="let t of b.tests">
+                    <div class="col-md-2">{{ t.code }}</div>
+                    <div class="col-md-2">{{ t.result }}</div>
+                </div>
+            </div>
+        </div>
     </div>
 
 </body>

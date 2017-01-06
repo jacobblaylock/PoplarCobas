@@ -17,8 +17,7 @@ export class MssqlService {
             .catch(this.handleError)
     }
 
-    getBatchDetail() {
-        let batchNumber = '20161201075101';
+    getBatchDetail(batchNumber: string) {
         let url = '/sql/getBatchDetail/' + batchNumber;
         return this._http.get(url)
             .map((resp: Response) => resp.json())
