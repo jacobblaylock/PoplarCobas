@@ -14,16 +14,15 @@
         <form>
             <div class="form-group">
                 <label for="batches">Select a batch to review:</label>
-                <select name="batches" class="form-control" id="batches" [(ngModel)]="selectedBatch">
-                    <option *ngFor="let batch of batchList" [value]="batch.batchNumber">{{ batch.batchNumber }}</option>
+                <select name="batches" class="form-control" id="batches" [(ngModel)]="selectedBatch" (ngModelChange)="onBatchChange($event)">
+                    <option *ngFor="let batch of batchList" [value]="batch.batchNumber">{{ batch.batchNumber }} - {{ batch.batchRunUser }}</option>
                 </select>
             </div>
         </form>
     </div>
 
     <div *ngIf="selectedBatch" class="container-fluid">
-        <h2>Batch Details for {{ selectedBatch }}</h2>
-        <button class="btn btn-primary" (click)="getBatchDetail()">Get Batch Details</button>
+        <h2>Details for Batch {{selectedBatch}}</h2>
         <div *ngFor="let b of batchDetails" class="row">
             <div class="col-md-2">{{ b.accessionNumber }}</div>
             <div class="col-md-10">

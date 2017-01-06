@@ -11,9 +11,9 @@ import { Batch } from './batch';
 })
 export class AppComponent implements OnInit  {
     batchList: Batch[];
-    selectedBatch: string;
     batchDetails: any[];
     errorMessage: string;
+    selectedBatch: string;
 
     constructor(private _mssql: MssqlService) {
 
@@ -31,12 +31,16 @@ export class AppComponent implements OnInit  {
             )
     }
 
-    getBatchDetail() {
-        this._mssql.getBatchDetail(this.selectedBatch)
+    getBatchDetail(batchNumber: string) {
+        this._mssql.getBatchDetail(batchNumber)
         .subscribe(
             data => this.batchDetails = data.details,
             error => this.errorMessage = <any>error
         )
+    }
+
+    onBatchChange(batchNumber: string) {
+        this.getBatchDetail(batchNumber);
     }
 
 }
