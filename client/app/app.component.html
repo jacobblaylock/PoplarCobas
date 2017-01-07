@@ -21,17 +21,24 @@
         </form>
     </div>
 
-    <div *ngIf="selectedBatch" class="container-fluid">
-        <h2>Details for Batch {{selectedBatch}}</h2>
-        <div *ngFor="let b of batchDetails" class="row">
-            <div class="col-md-2">{{ b.accessionNumber }}</div>
-            <div class="col-md-10">
-                <div class="row" *ngFor="let t of b.tests">
-                    <div class="col-md-2">{{ t.code }}</div>
-                    <div class="col-md-2">{{ t.result }}</div>
-                </div>
-            </div>
-        </div>
+    <div *ngIf="batchDetails" class="container-fluid">
+        <h2>Details for Batch {{ batchDetails.batchNumber }}. <br /><small>This batch was initially ran by user {{ batchDetails.batchRunUser }}</small></h2>
+        <table class="table">
+            <tr>
+                <th>Accession Number</th>
+                <th>Test</th>
+                <th>Result</th>
+            </tr>
+            <template ngFor let-case [ngForOf]="batchDetails.cases">
+                    <tr>
+                        <td [attr.rowspan]="case.tests.length + 1">{{ case.accessionNumber }}</td>
+                    </tr>
+                    <tr *ngFor="let test of case.tests" [class]="flagResult(test)">
+                        <td>{{ test.code }}</td>
+                        <td>{{ test.result }}</td>
+                    </tr>
+            </template>
+        </table>
     </div>
 
 </body>

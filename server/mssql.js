@@ -52,10 +52,10 @@ formatBatchDetail = function(recordset, callback){
     var batchDetail = {};
     batchDetail.batchNumber = recordset[0].batchNumber;
     batchDetail.batchRunUser = recordset[0].batchRunUser;
-    batchDetail.details = [];
+    batchDetail.cases = [];
 
     recordset.forEach(function(row){
-        if(!batchDetail.details.find(b => b.accessionNumber === row.accessionNumber)){
+        if(!batchDetail.cases.find(b => b.accessionNumber === row.accessionNumber)){
             var tests = [];
             recordset.forEach(function(row2){
                 if(row2.accessionNumber === row.accessionNumber){
@@ -66,7 +66,7 @@ formatBatchDetail = function(recordset, callback){
                 }
             })
 
-            batchDetail.details.push({
+            batchDetail.cases.push({
                 accessionNumber: row.accessionNumber,
                 tests: tests
             })
