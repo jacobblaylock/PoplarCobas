@@ -13,3 +13,12 @@ div.row {
 .alert {
   white-space: normal;
 }
+
+.btn-fixed {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+ .btn-fixed>button {
+   margin-bottom: 10px;
+ }

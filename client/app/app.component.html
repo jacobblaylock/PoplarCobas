@@ -9,36 +9,65 @@
     </div>
 </header>
 <body>
+    <div *ngIf="errorMessage" class="alert alert-danger"> {{ errorMessage }} </div>
     <div class="container-fluid">
         <h2>Batch Review</h2>
-        <form>
-            <div class="form-group">
-                <label for="batches">Select a batch to review:</label>
-                <select name="batches" class="form-control" id="batches" [(ngModel)]="selectedBatch" (ngModelChange)="onBatchChange($event)">
-                    <option *ngFor="let batch of batchList" [value]="batch.batchNumber">{{ batch.batchNumber }} - {{ batch.batchRunUser }}</option>
-                </select>
+        <div *ngIf="batchListCount > 0">
+            <div class="row">
+                <div class="col-md-12">
+                    <form>
+                        <div class="form-group">
+                            <label for="batches">Select a batch to review:</label>
+                            <select name="batches" class="form-control" id="batches" [(ngModel)]="selectedBatch" (ngModelChange)="onBatchChange($event)">
+                                <option *ngFor="let batch of batchList" [value]="batch.batchNumber">{{ batch.batchNumber }} - {{ batch.batchRunUser }}</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </form>
+        </div>
+        <div class="row" *ngIf="batchListCount < 1">
+            <div class="col-md-12">There are currently no batches available to review.</div>
+        </div>
     </div>
 
-    <div *ngIf="batchDetails" class="container-fluid">
-        <h2>Details for Batch {{ batchDetails.batchNumber }}. <br /><small>This batch was initially ran by user {{ batchDetails.batchRunUser }}</small></h2>
-        <table class="table">
-            <tr>
-                <th>Accession Number</th>
-                <th>Test</th>
-                <th>Result</th>
-            </tr>
-            <template ngFor let-case [ngForOf]="batchDetails.cases">
-                    <tr>
-                        <td [attr.rowspan]="case.tests.length + 1">{{ case.accessionNumber }}</td>
-                    </tr>
-                    <tr *ngFor="let test of case.tests" [class]="flagResult(test)">
-                        <td>{{ test.code }}</td>
-                        <td>{{ test.result }}</td>
-                    </tr>
-            </template>
-        </table>
-    </div>
+    <div *ngIf="batchDetails">
+        <div class="container-fluid">
+            <h2>Details for Batch {{ batchDetails.batchNumber }}. <br /><small>This batch was initially ran by user {{ batchDetails.batchRunUser }}</small></h2>
+            <form>
+                <div class="form-group">
+                    <label for="user">User Releasing Results</label>
+                    <input type="text" class="form-control" id="user" name="user" placeholder="Summit User Name" required [(ngModel)]="batchDetails.batchReleaseUser">
+                </div>
+                <div class="btn-fixed btn-group-vertical">
+                    <button type="submit" class="btn btn-success">Release Results</button>
+                    <button type="submit" class="btn btn-danger" (click)="rejectBatch()">Reject Results</button>
+                </div>
+            </form>
+        </div>
 
+        <div class="container-fluid">
+            <table class="table">
+                <tr>
+                    <th>Accession Number</th>
+                    <th>Test</th>
+                    <th>Result</th>
+                </tr>
+                <template ngFor let-case [ngForOf]="batchDetails.cases">
+                        <tr>
+                            <td [attr.rowspan]="case.tests.length + 1">{{ case.accessionNumber }}</td>
+                        </tr>
+                        <tr *ngFor="let test of case.tests" [class]="flagResult(test)">
+                            <td>{{ test.code }}</td>
+                            <td>{{ test.result }}</td>
+                        </tr>
+                </template>
+            </table>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div *ngIf="queryStatusMessage" [class]="queryStatus">
+            {{ queryStatusMessage }}
+        </div>
+    </div>
 </body>

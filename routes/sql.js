@@ -16,4 +16,16 @@ router.get('/getBatchDetail/:number', function(req, res, next){
     })
 })
 
+router.put('/releaseBatch', function(req, res, next){
+    cobasDI.releaseBatch(function(cb){
+        res.send(cb);
+    })
+})
+
+router.put('/rejectBatch/:number', function(req, res, next){
+    cobasDI.rejectBatch(req.params.number, req.body.user, function(cb){
+        res.send(cb[0]);
+    })
+})
+
 module.exports = router;

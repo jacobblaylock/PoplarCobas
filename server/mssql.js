@@ -22,10 +22,8 @@ CobasDI.prototype.getBatches = function(callback){
 
         new sql.Request()
         .query(query).then(function(recordset){
-            //console.log(recordset);
             callback(recordset);
         }).catch(function(err){
-           // console.log(error);
            callback(error);
         });
     });
@@ -41,6 +39,36 @@ CobasDI.prototype.getBatchDetail = function(batchNumber, callback){
             formatBatchDetail(recordset, function(cb){
                 callback(cb);
             })
+        }).catch(function(err){
+            //console.log('ERROR: ' + error);
+            callback(error);
+        });
+    });
+}
+
+CobasDI.prototype.releaseBatch = function(batchNumber, user, callback) {
+    sql.connect(this.config).then(function(){
+
+        var query = "EXEC stprc_release_batch '" + batchNumber + "', '" + user + "'";
+
+        new sql.Request()
+        .query(query).then(function(recordset){
+            callback(recordset);
+        }).catch(function(err){
+            //console.log('ERROR: ' + error);
+            callback(error);
+        });
+    });
+}
+
+CobasDI.prototype.rejectBatch = function(batchNumber, user, callback) {
+    sql.connect(this.config).then(function(){
+
+        var query = "EXEC stprc_reject_batch '" + batchNumber + "', '" + user + "'";
+
+        new sql.Request()
+        .query(query).then(function(recordset){
+            callback(recordset);
         }).catch(function(err){
             //console.log('ERROR: ' + error);
             callback(error);

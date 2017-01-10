@@ -3,7 +3,8 @@ CREATE TABLE Batch(
 	batchNumber varchar(20) NOT NULL UNIQUE,
 	batchRunUser varchar(30) NOT NULL,
 	batchReleaseUser varchar(30) NULL,
-	releaseDate datetime NULL
+	releaseDate datetime NULL,
+	releaseStatus varchar(15) NULL
 )
 
 CREATE TABLE Accession(

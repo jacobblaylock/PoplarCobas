@@ -24,8 +24,20 @@ export class MssqlService {
             .catch(this.handleError)
     }
 
+    releaseBatch(batchNumber: string){
+        let url = '/sql/releaseBatch/' + batchNumber;
+        return this._http.get(url)
+            .map((resp: Response) => resp.json())
+            .catch(this.handleError)
+    }
 
-
+    rejectBatch(batchNumber: string, user: string){
+        let body = {user: user};
+        let url = '/sql/rejectBatch/' + batchNumber;
+        return this._http.put(url, body)
+            .map((resp: Response) => resp.json())
+            .catch(this.handleError)
+    }
 
     private handleError (error: Response | any) {
         // In a real world app, we might use a remote logging infrastructure
