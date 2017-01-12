@@ -22,6 +22,7 @@ CobasDI.prototype.getBatches = function(callback){
 
         new sql.Request()
         .query(query).then(function(recordset){
+            console.log(recordset);
             callback(recordset);
         }).catch(function(err){
            callback(error);
@@ -79,6 +80,7 @@ CobasDI.prototype.rejectBatch = function(batchNumber, user, callback) {
 formatBatchDetail = function(recordset, callback){
     var batchDetail = {};
     batchDetail.batchNumber = recordset[0].batchNumber;
+    batchDetail.batchDateString = recordset[0].batchDateString;
     batchDetail.batchRunUser = recordset[0].batchRunUser;
     batchDetail.cases = [];
 

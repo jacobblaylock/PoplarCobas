@@ -99,4 +99,9 @@ export class AppComponent implements OnInit  {
         )
     }
 
+    getCurrentBatchDate(): Date {
+        let date = new Date(this.batchDetails.batchDateString);
+        return date;
+    }
+
 }

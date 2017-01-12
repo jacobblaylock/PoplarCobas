@@ -19,7 +19,7 @@
                         <div class="form-group">
                             <label for="batches">Select a batch to review:</label>
                             <select name="batches" class="form-control" id="batches" [(ngModel)]="selectedBatch" (ngModelChange)="onBatchChange($event)">
-                                <option *ngFor="let batch of batchList" [value]="batch.batchNumber">{{ batch.batchNumber }} - {{ batch.batchRunUser }}</option>
+                                <option *ngFor="let batch of batchList" [value]="batch.batchNumber">{{ batch.batchDateString | date:'dd-MMM-y HH:mm' }}  -  performed by user {{ batch.batchRunUser }}</option>
                             </select>
                         </div>
                     </form>
@@ -33,15 +33,15 @@
 
     <div *ngIf="batchDetails">
         <div class="container-fluid">
-            <h2>Details for Batch {{ batchDetails.batchNumber }}. <br /><small>This batch was initially ran by user {{ batchDetails.batchRunUser }}</small></h2>
+            <h2>Details for Batch {{ batchDetails.batchDateString | date:'dd-MMM-y HH:mm' }}     <br /><small>This batch was initially ran by user {{ batchDetails.batchRunUser }}</small></h2>
             <form>
                 <div class="form-group">
                     <label for="user">User Releasing Results</label>
                     <input type="text" class="form-control" id="user" name="user" placeholder="Summit User Name" required [(ngModel)]="batchDetails.batchReleaseUser">
                 </div>
                 <div class="btn-fixed btn-group-vertical">
-                    <button type="submit" class="btn btn-success">Release Results</button>
-                    <button type="submit" class="btn btn-danger" (click)="rejectBatch()">Reject Results</button>
+                    <button type="submit" class="btn btn-success btn-lg">Release Results</button>
+                    <button type="submit" class="btn btn-danger btn-lg" (click)="rejectBatch()">Reject Results</button>
                 </div>
             </form>
         </div>

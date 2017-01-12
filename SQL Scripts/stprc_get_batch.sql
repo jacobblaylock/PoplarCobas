@@ -10,10 +10,9 @@ AS
 BEGIN
 
 --Testing
-/*
-DECLARE @releaseStatus char(1)
-SET @releaseStatus = 'REJECTED'
-*/
+--DECLARE @releaseStatus varchar(15)
+--SET @releaseStatus = 'ALL'
+
 
 SET NOCOUNT ON
 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
@@ -26,11 +25,16 @@ END
 
 IF @releaseStatus = 'ALL'
 BEGIN
-	SELECT batchNumber, batchRunUser, batchReleaseUser, releaseDate
+	SELECT batchNumber, batchDateString, batchRunUser, batchReleaseUser, releaseDate, releaseStatus
 	FROM Batch
+END ELSE IF @releaseStatus IS NULL
+BEGIN
+	SELECT batchNumber, batchDateString, batchRunUser, batchReleaseUser, releaseDate, releaseStatus
+	FROM Batch
+	WHERE releaseStatus IS NULL
 END ELSE
 BEGIN
-	SELECT batchNumber, batchRunUser, batchReleaseUser, releaseDate
+	SELECT batchNumber, batchDateString, batchRunUser, batchReleaseUser, releaseDate, releaseStatus
 	FROM Batch
 	WHERE releaseStatus = @releaseStatus
 END
