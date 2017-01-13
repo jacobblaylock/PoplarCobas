@@ -72,9 +72,19 @@ export class AppComponent implements OnInit  {
     }
 
     releaseBatch() {
-        this._mssql.releaseBatch(this.batchDetails.batchNumber)
+        this._mssql.releaseBatch(this.batchDetails.batchNumber, this.batchDetails.batchReleaseUser)
         .subscribe(
-            data => this.queryStatus = data.message,
+            data => {
+                if(data.message.substring(0,1) === 'E'){
+                    this.queryStatus = 'alert alert-danger';
+                    this.queryStatusMessage = 'ERROR:  ';
+                }else{
+                    this.queryStatus = 'alert alert-success';
+                    this.queryStatusMessage = 'SUCCESS:  '
+                }
+                this.queryStatusMessage += data.message;
+
+            },
             error => this.errorMessage = <any>error,
             () => this.reset()
         )

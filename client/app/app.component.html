@@ -40,14 +40,16 @@
                     <input type="text" class="form-control" id="user" name="user" placeholder="Summit User Name" required [(ngModel)]="batchDetails.batchReleaseUser">
                 </div>
                 <div class="btn-fixed btn-group-vertical">
-                    <button type="submit" class="btn btn-success btn-lg">Release Results</button>
+                    <button type="submit" class="btn btn-success btn-lg" (click)="releaseBatch()">Release Results</button>
                     <button type="submit" class="btn btn-danger btn-lg" (click)="rejectBatch()">Reject Results</button>
                 </div>
             </form>
         </div>
 
         <div class="container-fluid">
-            <table class="table">
+            <!--<div class="row">
+                <div class="col-md-12">-->
+            <table class="table table-condensed">
                 <tr>
                     <th>Accession Number</th>
                     <th>Test</th>
@@ -63,6 +65,9 @@
                         </tr>
                 </template>
             </table>
+                <!--</div>
+            </div>-->
+
         </div>
     </div>
     <div class="container-fluid">

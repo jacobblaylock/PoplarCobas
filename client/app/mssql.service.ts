@@ -24,9 +24,10 @@ export class MssqlService {
             .catch(this.handleError)
     }
 
-    releaseBatch(batchNumber: string){
+    releaseBatch(batchNumber: string, user: string){
+        let body = {user: user};
         let url = '/sql/releaseBatch/' + batchNumber;
-        return this._http.get(url)
+        return this._http.put(url, body)
             .map((resp: Response) => resp.json())
             .catch(this.handleError)
     }

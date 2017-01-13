@@ -1,6 +1,7 @@
 CREATE TABLE Batch(
 	id int IDENTITY(1,1) PRIMARY KEY,
 	batchNumber varchar(20) NOT NULL UNIQUE,
+	batchDateString varchar(30) NOT NULL,
 	batchRunUser varchar(30) NOT NULL,
 	batchReleaseUser varchar(30) NULL,
 	releaseDate datetime NULL,

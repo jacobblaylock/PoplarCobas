@@ -22,7 +22,6 @@ CobasDI.prototype.getBatches = function(callback){
 
         new sql.Request()
         .query(query).then(function(recordset){
-            console.log(recordset);
             callback(recordset);
         }).catch(function(err){
            callback(error);
@@ -56,7 +55,7 @@ CobasDI.prototype.releaseBatch = function(batchNumber, user, callback) {
         .query(query).then(function(recordset){
             callback(recordset);
         }).catch(function(err){
-            //console.log('ERROR: ' + error);
+            console.log('ERROR: ' + error);
             callback(error);
         });
     });
