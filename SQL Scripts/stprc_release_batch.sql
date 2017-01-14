@@ -1,6 +1,3 @@
-USE [CobasDI]
-GO
-
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -23,7 +20,7 @@ SET CONCAT_NULL_YIELDS_NULL OFF
 DECLARE @BatchId int, @errorMessage varchar(1000), @errorCode varchar(4), @successMessage varchar(1000), @releaseStatus varchar(15), @prevReleaseUser varchar(30), @batchDateString varchar(20)
 
 SELECT @BatchId = id, @releaseStatus = releaseStatus, @prevReleaseUser = batchReleaseUser, @batchDateString = batchDateString
-FROM Batch 
+FROM Batch
 WHERE batchNumber = @batchNumber
 
 IF @BatchId IS NULL
@@ -34,7 +31,7 @@ END ELSE IF @releaseStatus IS NOT NULL
 BEGIN
 	SELECT @errorCode = 'E2',  @errorMessage = 'Update to Batch failed.  Batch ' + @batchDateString + ' (Id = ' + CAST(@BatchId AS varchar) + ') has already been reviewed and ' + @releaseStatus + ' by user ' + @prevReleaseUser + '.'
 	GOTO errorSection
-END 
+END
 
 
 -- Get Batch Details to perform Summit Insert
@@ -80,7 +77,7 @@ BEGIN TRY
 	WHERE id = @BatchId
 END TRY
 BEGIN CATCH
-	SELECT @errorCode = 'E3',  @errorMessage = 'Update to Batch failed for batch ' + @batchDateString + ' (Id = ' + CAST(@BatchId AS varchar) + ').  -  ' + ERROR_MESSAGE()	
+	SELECT @errorCode = 'E3',  @errorMessage = 'Update to Batch failed for batch ' + @batchDateString + ' (Id = ' + CAST(@BatchId AS varchar) + ').  -  ' + ERROR_MESSAGE()
 END CATCH
 IF @@TRANCOUNT > 0 COMMIT
 SELECT @successMessage = 'Batch ' + @batchDateString + ' (Id = ' + CAST(@BatchId AS varchar) + ') has been released by user ' + @batchReleaseUser + '.'

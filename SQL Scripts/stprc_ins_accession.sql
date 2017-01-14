@@ -1,11 +1,8 @@
-USE [CobasDI]
-GO
-
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-ALTER PROCEDURE stprc_ins_accession @batchNumber varchar(20), @batchDateString varchar(30), @accessionNumber varchar(20), @batchRunUser varchar(30)
+CREATE PROCEDURE stprc_ins_accession @batchNumber varchar(20), @batchDateString varchar(30), @accessionNumber varchar(20), @batchRunUser varchar(30)
 AS
 BEGIN
 
@@ -37,7 +34,7 @@ BEGIN
 		END CATCH
   		IF @@TRANCOUNT > 0 COMMIT
   		SELECT @BatchId = @@IDENTITY
-		
+
 		SELECT @successMessage = 'Added row to "Batch" for batch number ' + @batchDateString + ' (Id = ' + CAST(@BatchId AS varchar) + ').  '
 END ELSE
 BEGIN

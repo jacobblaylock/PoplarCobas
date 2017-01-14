@@ -1,11 +1,8 @@
-USE [CobasDI]
-GO
-
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-ALTER PROCEDURE stprc_ins_test @AccessionId int, @code varchar(30), @result varchar(50)
+CREATE PROCEDURE stprc_ins_test @AccessionId int, @code varchar(30), @result varchar(50)
 AS
 BEGIN
 
@@ -43,7 +40,7 @@ BEGIN
 		END CATCH
   		IF @@TRANCOUNT > 0 COMMIT
   		SELECT @TestId = @@IDENTITY
-		
+
 		SELECT @successMessage = 'Added row to "Test" for test ' + @code + ' with result ' + @result +  '(Id = ' + CAST(@TestId AS varchar) + ').  Case is ' + @accessionNumber + '(Id = ' + CAST(@AccessionId AS varchar) + ').  '
 END ELSE
 BEGIN

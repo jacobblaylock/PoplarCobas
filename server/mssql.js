@@ -1,18 +1,9 @@
 var sql = require('mssql');
+var sqlConfig = require('../server.config.test.json');
 
 
 var CobasDI = function(){
-    this.config = {
-        user: 'PMT',
-        password: 'PMT@Mirth1',
-        server: 'localhost',
-        database: 'CobasDI',
-        pool: {
-            max: 10,
-            min: 0,
-            idleTimeoutMillis: 30000
-        }
-    }
+    this.config =  sqlConfig;
 }
 
 CobasDI.prototype.getBatches = function(callback){
@@ -24,6 +15,7 @@ CobasDI.prototype.getBatches = function(callback){
         .query(query).then(function(recordset){
             callback(recordset);
         }).catch(function(err){
+            console.log(error);
            callback(error);
         });
     });

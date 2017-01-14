@@ -1,11 +1,8 @@
-USE [Summit-Prod]
-GO
-/****** Object:  StoredProcedure [dbo].[stprc_peak_di_ins_rslt]    Script Date: 12/24/2016 12:30:33 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-ALTER PROCEDURE [dbo].[stprc_ins_rslt_summit] @BatchId int, @barcode varchar(20), @testCode varchar(30), @result varchar(255), @personnelLogin varchar(30)
+CREATE PROCEDURE [dbo].[stprc_ins_rslt_summit] @BatchId int, @barcode varchar(20), @testCode varchar(30), @result varchar(255), @personnelLogin varchar(30)
 AS
 BEGIN
 
