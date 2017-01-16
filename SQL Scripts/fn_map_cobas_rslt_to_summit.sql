@@ -16,14 +16,14 @@ AS
 BEGIN
 	DECLARE @mappedResult varchar(50)
 
-	SELECT @mappedResult = 
+	SELECT @mappedResult =
 		CASE
 			WHEN @result LIKE 'NEG%' THEN 'Negative'
 			WHEN @result LIKE 'POS%' THEN 'Positive'
 			WHEN @result LIKE 'INV%' AND @code IN ('01CT', '01NG') THEN 'QNS'
 			WHEN @result LIKE 'INV%' AND @code IN ('02HPVOHR', '02HPV16', '02HPV18') THEN 'Indeterminate'
 			WHEN @result LIKE 'INV%' AND @code IN ('02HPVALL') THEN 'Invalid'
-			ELSE 'Invalid'
+			ELSE @result
 			END
 
 	RETURN @mappedResult

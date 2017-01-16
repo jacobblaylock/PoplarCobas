@@ -1,3 +1,4 @@
+/****** Object:  StoredProcedure [dbo].[stprc_release_batch]    Script Date: 1/16/2017 2:04:09 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -9,7 +10,7 @@ BEGIN
 --Testing
 /*
 DECLARE @batchNumber varchar(20), @batchReleaseUser varchar(30)
-SELECT @batchNumber = '20161201075101', @batchReleaseUser = 'jblaylock'
+SELECT @batchNumber = '20140201173001', @batchReleaseUser = 'srichmond'
 --EXEC stprc_release_batch @batchNumber, @batchReleaseUser
 */
 
@@ -47,6 +48,38 @@ DECLARE @batchDetails TABLE (
 INSERT INTO @batchDetails
 EXEC stprc_get_batch_details @batchNumber
 
+-- Add HPV ALL Results
+DECLARE @hpvAllResult varchar(15)
+IF EXISTS(
+	SELECT code
+	FROM @batchDetails bd
+	WHERE bd.code IN ('02HPV16','02HPV18','02HPVOHR')
+)
+BEGIN
+	IF EXISTS(
+		SELECT code
+		FROM @batchDetails bd
+		WHERE bd.code IN ('02HPV16','02HPV18','02HPVOHR')
+			AND bd.result LIKE 'POS%'
+	)
+	BEGIN
+		SET @hpvAllResult = 'POS'
+	END ELSE IF EXISTS (
+		SELECT code
+		FROM @batchDetails bd
+		WHERE bd.code IN ('02HPV16','02HPV18','02HPVOHR')
+			AND (bd.result LIKE 'INV%' OR bd.result LIKE 'IND%')
+	)
+	BEGIN
+		SET @hpvAllResult = 'INV'
+	END
+
+	INSERT INTO @batchDetails(batchNumber, batchDateString, batchRunUser, accessionNumber, code, result)
+	SELECT TOP 1 bd.batchNumber, bd.batchDateString, bd.batchRunUser, bd.accessionNumber, '02HPVALL', @hpvAllResult
+	FROM @batchDetails bd
+	WHERE bd.code IN ('02HPV16','02HPV18','02HPVOHR')
+END
+
 -- Insert Results into Summit
 DECLARE @barcode varchar(20), @testCode varchar(30), @result varchar(255)
 
@@ -59,14 +92,13 @@ OPEN insertCursor
 	WHILE (@@FETCH_STATUS <> -1)
 	BEGIN
 
-		PRINT 'EXEC stprc_ins_rslt_summit ' + CAST(@BatchId AS varchar) + ',' +  @barcode + ', ' + @testCode + ', ' + dbo.fn_map_cobas_rslt_to_summit(@testCode, @result) + ', ' + @batchReleaseUser
-		--EXEC [SUMMITSQL].[Summit-ProdBeta].dbo.stprc_peak_ins_rslt_summit @BatchId, @barcode, @testCode, @result, @batchReleaseUser
+		--PRINT 'EXEC [SUMMITSQL].[Summit-ProdBeta].dbo.stprc_peak_ins_di_rslt_summit ' + CAST(@BatchId AS varchar) + ',''' +  @barcode + ''', ''' + @testCode + ''', ''' + dbo.fn_map_cobas_rslt_to_summit(@testCode, @result) + ''', ''' + @batchReleaseUser + ''''
+		EXEC [SUMMITSQL].[Summit-ProdBeta].dbo.stprc_peak_ins_di_rslt_summit @BatchId, @barcode, @testCode, @result, @batchReleaseUser
 
 	FETCH NEXT FROM insertCursor INTO @barcode, @testCode, @result
 	END
 CLOSE insertCursor
 DEALLOCATE insertCursor
-
 
 
 -- Mark Batch as Released
@@ -93,5 +125,3 @@ errorSection:
 SELECT @errorCode + ':  ' + @errorMessage AS message
 
 END
-
-
