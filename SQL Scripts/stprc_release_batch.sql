@@ -60,7 +60,7 @@ OPEN insertCursor
 	BEGIN
 
 		PRINT 'EXEC stprc_ins_rslt_summit ' + CAST(@BatchId AS varchar) + ',' +  @barcode + ', ' + @testCode + ', ' + dbo.fn_map_cobas_rslt_to_summit(@testCode, @result) + ', ' + @batchReleaseUser
-		--EXEC stprc_ins_rslt_summit @BatchId, @barcode, @testCode, @result, @batchReleaseUser
+		--EXEC [SUMMITSQL].[Summit-ProdBeta].dbo.stprc_peak_ins_rslt_summit @BatchId, @barcode, @testCode, @result, @batchReleaseUser
 
 	FETCH NEXT FROM insertCursor INTO @barcode, @testCode, @result
 	END

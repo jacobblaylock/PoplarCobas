@@ -2,7 +2,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE PROCEDURE [dbo].[stprc_ins_rslt_summit] @BatchId int, @barcode varchar(20), @testCode varchar(30), @result varchar(255), @personnelLogin varchar(30)
+CREATE PROCEDURE [dbo].[stprc_peak_ins_di_rslt_summit] @BatchId int, @barcode varchar(20), @testCode varchar(30), @result varchar(255), @personnelLogin varchar(30)
 AS
 BEGIN
 
@@ -40,7 +40,7 @@ SET @okayToFinalize = 'Y'
 ----------------------------------------------------
 
 --Get PersonnelId
-SELECT @personnelId = pp.Id, @PersonnelUri = 'https://summitiis/summitprod/Personnel/Personnel/v1/' + CAST(pp.Id AS varchar(5))
+SELECT @personnelId = pp.Id, @PersonnelUri = 'https://summitiis/summitbeta/Personnel/Personnel/v1/' + CAST(pp.Id AS varchar(5))
 FROM Personnel_Person pp
 	JOIN Personnel_Account pa ON pa.Person_Id = pp.Id
 	JOIN peak_di_user_map m ON m.summitUser = pa.[Identity]
@@ -48,11 +48,11 @@ WHERE m.machineUser = @personnelLogin
 --default to admin account
 IF @personnelId IS NULL
 	BEGIN
-		SELECT @personnelId = 1, @PersonnelUri = 'https://summitiis/summitprod/Personnel/Personnel/v1/1'
+		SELECT @personnelId = 1, @PersonnelUri = 'https://summitiis/summitbeta/Personnel/Personnel/v1/1'
 	END
 
 --Get Case Id
-SELECT @caseId = Id, @CaseUri = 'https://summitiis/summitprod/Cases/Cases/v1/' + CAST(Id AS varchar(10))
+SELECT @caseId = Id, @CaseUri = 'https://summitiis/summitbeta/Cases/Cases/v1/' + CAST(Id AS varchar(10))
 FROM Case_Case
 WHERE label = @barcode
 
@@ -63,7 +63,7 @@ IF @caseId IS NULL
 	END
 
 --Get Case/Task/Step Id's.   Step cannot be 'skipped', 'condition not met', 'not required', or 'cancelled'
-SELECT @Task_Id = pt.Id, @Step_Id = ps.Id, @StepUri = 'https://summitiis/summitprod/Process/Tasks/v1/' + CAST(pt.Id AS varchar(10)) + '/Steps/' + CAST(ps.Id AS varchar(10))
+SELECT @Task_Id = pt.Id, @Step_Id = ps.Id, @StepUri = 'https://summitiis/summitbeta/Process/Tasks/v1/' + CAST(pt.Id AS varchar(10)) + '/Steps/' + CAST(ps.Id AS varchar(10))
 FROM Case_Case cc (nolock)
 	JOIN Process_Task pt (nolock) ON dbo.GetIdFromUri(pt.CaseUri) = cc.Id
 	JOIN Process_TaskDefinition ptd (nolock) ON ptd.Id = pt.TaskDefinition_Id
@@ -153,13 +153,13 @@ BEGIN TRANSACTION
 IF @@TRANCOUNT > 0 COMMIT
 
 --Get Result Type and Uri for the test code
-SELECT @ResultTypeId = id, @ResultTypeUri = 'https://summitiis/summitprod/Process/ResultTypes/v1/' + CAST(id AS varchar(5))
+SELECT @ResultTypeId = id, @ResultTypeUri = 'https://summitiis/summitbeta/Process/ResultTypes/v1/' + CAST(id AS varchar(5))
 FROM Process_ResultType prt
 	JOIN Peak_DI_Cobas_Map map ON map.resultTypeCode = prt.Code
 WHERE map.cobasCode = @testCode
 
 --Get Observation Type for the test code
-SELECT @ObsTypeId = Id, @ObsTypeUri = 'https://summitiis/summitprod/Process/ObservationTypes/v1/' + CAST(Id AS varchar(5))
+SELECT @ObsTypeId = Id, @ObsTypeUri = 'https://summitiis/summitbeta/Process/ObservationTypes/v1/' + CAST(Id AS varchar(5))
 FROM Process_ObservationType pot
 	JOIN Peak_DI_Cobas_Map map ON map.obsTypeCode = pot.Code
 WHERE map.cobasCode = @testCode
