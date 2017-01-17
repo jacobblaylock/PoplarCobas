@@ -1,4 +1,6 @@
-/****** Object:  StoredProcedure [dbo].[stprc_release_batch]    Script Date: 1/16/2017 2:04:09 PM ******/
+USE [CobasDITest]
+GO
+/****** Object:  StoredProcedure [dbo].[stprc_release_batch]    Script Date: 1/16/2017 4:14:27 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -81,7 +83,7 @@ BEGIN
 END
 
 -- Insert Results into Summit
-DECLARE @barcode varchar(20), @testCode varchar(30), @result varchar(255)
+DECLARE @barcode varchar(20), @testCode varchar(30), @result varchar(255), @mappedResult varchar(255)
 
 DECLARE insertCursor CURSOR LOCAL
 FOR
@@ -92,8 +94,12 @@ OPEN insertCursor
 	WHILE (@@FETCH_STATUS <> -1)
 	BEGIN
 
-		--PRINT 'EXEC [SUMMITSQL].[Summit-ProdBeta].dbo.stprc_peak_ins_di_rslt_summit ' + CAST(@BatchId AS varchar) + ',''' +  @barcode + ''', ''' + @testCode + ''', ''' + dbo.fn_map_cobas_rslt_to_summit(@testCode, @result) + ''', ''' + @batchReleaseUser + ''''
-		EXEC [SUMMITSQL].[Summit-ProdBeta].dbo.stprc_peak_ins_di_rslt_summit @BatchId, @barcode, @testCode, @result, @batchReleaseUser
+		SELECT @mappedResult = dbo.fn_map_cobas_rslt_to_summit(@testCode, @result)
+
+		--PRINT 'EXEC [SUMMITSQL].[Summit-ProdBeta].dbo.stprc_peak_ins_di_rslt_summit ' + CAST(@BatchId AS varchar) + ',''' +  @barcode + ''', ''' + @testCode + ''', ''' + @mappedResult + ''', ''' + @batchReleaseUser + ''''
+		EXEC [SUMMITSQL].[Summit-ProdBeta].dbo.stprc_peak_ins_di_rslt_summit @BatchId, @barcode, @testCode, @mappedResult, @batchReleaseUser
+
+		SELECT @mappedResult = NULL
 
 	FETCH NEXT FROM insertCursor INTO @barcode, @testCode, @result
 	END

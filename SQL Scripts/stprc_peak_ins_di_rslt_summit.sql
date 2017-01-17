@@ -1,3 +1,6 @@
+USE [Summit-ProdBeta]
+GO
+/****** Object:  StoredProcedure [dbo].[stprc_peak_ins_di_rslt_summit]    Script Date: 1/16/2017 11:40:06 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -27,11 +30,11 @@ SET @okayToFinalize = 'Y'
 --Testing
 -----------------------------------------------------------------------------------------------------
 --DECLARE @BatchId varchar(255), @testCode varchar(30), @barcode varchar(20), @result varchar(255), @personnelLogin varchar(30)
---SELECT @BatchId = 'e67a533f-2f0a-4ebc-ac02-2ac91ce8e79d',
---	@testCode = '01CT',
---	@result = 'QNS',
---	@barcode = 'WHC-16-014322',
---	@personnelLogin = 'rpowell'
+--SELECT @BatchId = 1,
+--	@testCode = '02HPVALL',
+--	@result = 'Positive',
+--	@barcode = 'WHC-17-000009',
+--	@personnelLogin = 'srichmond'
 
 -----------------------------------------------------------------------------------------------------
 
@@ -43,13 +46,15 @@ SET @okayToFinalize = 'Y'
 SELECT @personnelId = pp.Id, @PersonnelUri = 'https://summitiis/summitbeta/Personnel/Personnel/v1/' + CAST(pp.Id AS varchar(5))
 FROM Personnel_Person pp
 	JOIN Personnel_Account pa ON pa.Person_Id = pp.Id
-	JOIN peak_di_user_map m ON m.summitUser = pa.[Identity]
-WHERE m.machineUser = @personnelLogin
+	--JOIN peak_di_user_map m ON m.summitUser = pa.[Identity]
+WHERE pa.[Identity] = @personnelLogin
 --default to admin account
 IF @personnelId IS NULL
 	BEGIN
 		SELECT @personnelId = 1, @PersonnelUri = 'https://summitiis/summitbeta/Personnel/Personnel/v1/1'
 	END
+
+
 
 --Get Case Id
 SELECT @caseId = Id, @CaseUri = 'https://summitiis/summitbeta/Cases/Cases/v1/' + CAST(Id AS varchar(10))
@@ -62,14 +67,14 @@ IF @caseId IS NULL
 		GOTO errorSection
 	END
 
+
 --Get Case/Task/Step Id's.   Step cannot be 'skipped', 'condition not met', 'not required', or 'cancelled'
 SELECT @Task_Id = pt.Id, @Step_Id = ps.Id, @StepUri = 'https://summitiis/summitbeta/Process/Tasks/v1/' + CAST(pt.Id AS varchar(10)) + '/Steps/' + CAST(ps.Id AS varchar(10))
-FROM Case_Case cc (nolock)
-	JOIN Process_Task pt (nolock) ON dbo.GetIdFromUri(pt.CaseUri) = cc.Id
+FROM Process_Task pt (nolock)
 	JOIN Process_TaskDefinition ptd (nolock) ON ptd.Id = pt.TaskDefinition_Id
 	JOIN Process_Step ps (nolock) ON ps.Task_Id = pt.Id
 	JOIN Peak_DI_Cobas_Map map ON map.taskCode = ptd.Code
-WHERE cc.Id = @caseId
+WHERE pt.CaseUri = @CaseUri
 	AND pt.status NOT IN (4,5,6,7)
 	AND ps.status NOT IN (4,5,6,7)
 	AND map.cobasCode = @testCode
@@ -165,11 +170,12 @@ FROM Process_ObservationType pot
 WHERE map.cobasCode = @testCode
 
 
+
 --**************INSERT PROCESS_RESULT*************--
 ----------------------------------------------------
 IF NOT EXISTS(SELECT *
 				FROM Process_Result
-				WHERE dbo.GetIdFromUri(CaseUri) = @caseId
+				WHERE CaseUri = @CaseUri
 					AND Type_Id = @ResultTypeId)
 	BEGIN
 		BEGIN TRANSACTION
@@ -243,7 +249,7 @@ IF  EXISTS(
 	SELECT po.Id
 	FROM Process_Observations po
 	WHERE po.Result_Id = @Result_Id
-		AND dbo.GetIdFromUri(po.ObservationTypeUri) = @ObsTypeId
+		AND po.Type_Id = @ObsTypeId
 		AND po.StringValue NOT IN ('QNS', 'Invalid', 'Indeterminate')
 	)
 	BEGIN
@@ -254,7 +260,7 @@ IF  EXISTS(
 		SELECT po.Id
 		FROM Process_Observations po
 		WHERE po.Result_Id = @Result_Id
-			AND dbo.GetIdFromUri(po.ObservationTypeUri) = @ObsTypeId
+			AND po.Type_Id = @ObsTypeId
 			AND po.StringValue IN ('QNS', 'Invalid', 'Indeterminate')
 		)
 		AND @result NOT IN ('QNS', 'Invalid', 'Indeterminate')
@@ -264,7 +270,7 @@ IF  EXISTS(
 			UPDATE Process_Observations
 			SET StringValue = @result
 			WHERE Result_Id = @Result_Id
-				AND dbo.GetIdFromUri(ObservationTypeUri) = @ObsTypeId
+				AND Type_Id = @ObsTypeId
 				AND StringValue IN ('QNS', 'Invalid', 'Indeterminate')
 		END TRY
 		BEGIN CATCH
@@ -298,7 +304,7 @@ IF @obsRowInsId IS NOT NULL
 		SELECT @Obs_Id = MAX(po.id)
 		FROM Process_Observation po
 		WHERE po.Result_Id = @Result_Id
-			AND dbo.GetIdFromUri(po.ObservationTypeUri) = @ObsTypeId
+			AND po.Type_Id = @ObsTypeId
 	END
 
 --**************UPDATE PROCESS_TASK/STEP**********--
@@ -312,7 +318,7 @@ IF @testCode IN ('02HPV16', '02HPV18')
 			FROM Process_Observations po
 			WHERE po.Result_Id = @Result_Id
 				AND po.Id <> @Obs_Id
-				AND dbo.GetIdFromUri(po.ObservationTypeUri) <> @ObsTypeId
+				AND po.Type_Id <> @ObsTypeId
 				AND (
 						po.StringValue IN ('Negative', 'Positive')
 						OR (
