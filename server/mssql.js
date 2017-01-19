@@ -1,5 +1,5 @@
 var sql = require('mssql');
-var sqlConfig = require('../server.config.test.json');
+var sqlConfig = require('../server.config.local.json');
 
 
 var CobasDI = function(){
