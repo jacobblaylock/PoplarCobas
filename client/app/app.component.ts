@@ -41,20 +41,51 @@ export class AppComponent implements OnInit  {
         this.getBatchData();
     }
 
+    handleSqlError(data: any) {
+        if(data.message.indexOf('ECONNREFUSED')>0){
+            this.errorMessage = `ERROR: Unable to connect to the database.
+                Verify you are connected to the Poplar network and refresh the page.
+                If the problem persists, contact IT support.  DETAILS:
+                ` + data.message;
+        }else{
+            this.errorMessage = 'ERROR:  ' + data.message;
+        }
+    }
+
     getBatchData() {
         this._mssql.getBatchData()
             .subscribe(
-                data => this.batchList = data,
+                data => {
+                    if(data.name){
+                        if(data.name.toUpperCase().indexOf('ERROR') > 0){
+                            this.handleSqlError(data);
+                        }
+                    }else{
+                        this.batchList = data;
+                    }
+                },
                 error => this.errorMessage = <any>error,
-                () => this.batchListCount = this.batchList.length
+                () => {
+                    if(!this.errorMessage){
+                        this.batchListCount = this.batchList.length;
+                    }
+                }
             )
     }
 
     getBatchDetail(batchNumber: string) {
         this._mssql.getBatchDetail(batchNumber)
         .subscribe(
-            data => this.batchDetails = data,
-            error => this.errorMessage = <any>error
+            data => {
+                if(data.name){
+                    if(data.name.toUpperCase().indexOf('ERROR') > 0){
+                        this.handleSqlError(data);
+                    }
+                }else{
+                    this.batchDetails = data;
+                }
+            },
+            error => this.errorMessage = <any>error,
         )
     }
 

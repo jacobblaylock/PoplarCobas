@@ -15,10 +15,11 @@ CobasDI.prototype.getBatches = function(callback){
         .query(query).then(function(recordset){
             callback(recordset);
         }).catch(function(err){
-            console.log(error);
            callback(error);
         });
-    });
+    }).catch(function(error){
+        callback(error);
+    })
 }
 
 CobasDI.prototype.getBatchDetail = function(batchNumber, callback){
@@ -35,6 +36,8 @@ CobasDI.prototype.getBatchDetail = function(batchNumber, callback){
             //console.log('ERROR: ' + error);
             callback(error);
         });
+    }).catch(function(error){
+        callback(error);
     });
 }
 
@@ -47,7 +50,7 @@ CobasDI.prototype.releaseBatch = function(batchNumber, user, callback) {
         .query(query).then(function(recordset){
             callback(recordset);
         }).catch(function(err){
-            console.log('ERROR: ' + error);
+            //console.log('ERROR: ' + error);
             callback(error);
         });
     });
