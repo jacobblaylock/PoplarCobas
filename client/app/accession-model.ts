@@ -1,4 +1,4 @@
-import { Test } from './test';
+import { Test } from './test-model';
 
 export interface Accession extends Test {
     case: string;

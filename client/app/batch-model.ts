@@ -1,4 +1,4 @@
-import { Accession } from './accession';
+import { Accession } from './accession-model';
 
 export interface Batch extends Accession {
     batchNumber: string;
