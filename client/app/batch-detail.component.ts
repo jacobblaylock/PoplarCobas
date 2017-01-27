@@ -1,6 +1,7 @@
 import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angular/core';
 
 import { MssqlService } from './mssql.service';
+import { AuthService } from './auth.service';
 
 import { Batch } from './batch-model';
 import { Test } from './test-model';
@@ -18,7 +19,7 @@ export class BatchDetailComponent implements OnInit, OnChanges {
     queryStatus: string;
     queryStatusMessage: string;
 
-    constructor(private _mssql: MssqlService) {
+    constructor(private _mssql: MssqlService, private _auth: AuthService) {
 
     }
 
@@ -62,6 +63,7 @@ export class BatchDetailComponent implements OnInit, OnChanges {
                 }
             },
             error => this.errorMessage = <any>error,
+            () => this.batchDetails.batchReleaseUser = this._auth.currentUser
         )
     }
 

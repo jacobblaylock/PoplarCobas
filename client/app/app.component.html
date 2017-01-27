@@ -9,5 +9,7 @@
     </div>
 </header>
 <body>
-    <batch-list></batch-list>
+    <login></login>
+    <hr />
+    <batch-list *ngIf="_auth.isAuthenticated()"></batch-list>
 </body>
