@@ -8,18 +8,18 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class MssqlService {
 
-    constructor(private _http: Http) { }
+    constructor(private http: Http) { }
 
     getBatchData() {
         let url = '/sql/getBatches';
-        return this._http.get(url)
+        return this.http.get(url)
             .map((resp: Response) => resp.json())
             .catch(this.handleError)
     }
 
     getBatchDetail(batchNumber: string) {
         let url = '/sql/getBatchDetail/' + batchNumber;
-        return this._http.get(url)
+        return this.http.get(url)
             .map((resp: Response) => resp.json())
             .catch(this.handleError)
     }
@@ -27,7 +27,7 @@ export class MssqlService {
     releaseBatch(batchNumber: string, user: string){
         let body = {user: user};
         let url = '/sql/releaseBatch/' + batchNumber;
-        return this._http.put(url, body)
+        return this.http.put(url, body)
             .map((resp: Response) => resp.json())
             .catch(this.handleError)
     }
@@ -35,7 +35,7 @@ export class MssqlService {
     rejectBatch(batchNumber: string, user: string){
         let body = {user: user};
         let url = '/sql/rejectBatch/' + batchNumber;
-        return this._http.put(url, body)
+        return this.http.put(url, body)
             .map((resp: Response) => resp.json())
             .catch(this.handleError)
     }

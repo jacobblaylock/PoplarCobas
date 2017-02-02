@@ -1,6 +1,6 @@
 <div class="container-fluid">
     <div class="col-md-4">
-        <form [formGroup]="loginForm" (ngSubmit)="login(loginForm.value)" autocomplete="off" novalidate>
+        <form [formGroup]="loginForm" (ngSubmit)="loginPassport(loginForm.value)" autocomplete="off" novalidate>
             <div class="form-group" [ngClass]="{'error': !validateUserName()}">
                 <label for="userName">User Name</label>
                 <em *ngIf="!validateUserName() || mouseoverLogin">Required</em>
@@ -18,7 +18,7 @@
     </div>
 </div>
 
-<div *ngIf="loginStatus && loginStatus != 'Authorized'" class="container-fluid">
+<div *ngIf="loginStatus && loginStatus != 'Authenticated'" class="container-fluid">
     <div class="row"></div>
     <div class="row">
         <div class="col-md-4">

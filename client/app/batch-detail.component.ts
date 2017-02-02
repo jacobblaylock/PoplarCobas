@@ -19,7 +19,7 @@ export class BatchDetailComponent implements OnInit, OnChanges {
     queryStatus: string;
     queryStatusMessage: string;
 
-    constructor(private _mssql: MssqlService, private _auth: AuthService) {
+    constructor(private mssql: MssqlService, private _auth: AuthService) {
 
     }
 
@@ -51,7 +51,7 @@ export class BatchDetailComponent implements OnInit, OnChanges {
     }
 
     getBatchDetail(batchNumber: string) {
-        this._mssql.getBatchDetail(batchNumber)
+        this.mssql.getBatchDetail(batchNumber)
         .subscribe(
             data => {
                 if(data.name){
@@ -76,7 +76,7 @@ export class BatchDetailComponent implements OnInit, OnChanges {
     }
 
     releaseBatch() {
-        this._mssql.releaseBatch(this.batchDetails.batchNumber, this.batchDetails.batchReleaseUser)
+        this.mssql.releaseBatch(this.batchDetails.batchNumber, this.batchDetails.batchReleaseUser)
         .subscribe(
             data => {
                 if(data.message.substring(0,1) === 'E'){
@@ -95,7 +95,7 @@ export class BatchDetailComponent implements OnInit, OnChanges {
     }
 
     rejectBatch() {
-        this._mssql.rejectBatch(this.batchDetails.batchNumber, this.batchDetails.batchReleaseUser)
+        this.mssql.rejectBatch(this.batchDetails.batchNumber, this.batchDetails.batchReleaseUser)
         .subscribe(
             data => {
                 if(data.message.substring(0,1) === 'E'){

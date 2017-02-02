@@ -9,7 +9,7 @@ import { AuthService } from './auth.service';
 })
 export class AppComponent implements OnInit  {
 
-    constructor(private _auth: AuthService) {
+    constructor(private auth: AuthService) {
 
     }
 

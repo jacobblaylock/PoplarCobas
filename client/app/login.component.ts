@@ -15,10 +15,11 @@ import { AuthService } from './auth.service';
 export class LoginComponent implements OnInit {
     loginStatus: string;
     loginForm: FormGroup;
+    errorMessage: string;
     private userName: FormControl;
     private password: FormControl;
 
-    constructor(private _auth: AuthService) { }
+    constructor(private auth: AuthService) { }
 
     ngOnInit() {
         this.userName = new FormControl('', Validators.required);
@@ -38,9 +39,26 @@ export class LoginComponent implements OnInit {
     }
 
     login(formValues: any) {
-        if(this.loginForm.valid){
-            this.loginStatus = this._auth.loginUser(formValues.userName, formValues.password);
+        if (this.loginForm.valid) {
+            this.loginStatus = this.auth.loginUser(formValues.userName, formValues.password);
         }
+    }
 
+    loginPassport(formValues: any) {
+        if (this.loginForm.valid) {
+            this.auth.loginPassport(formValues.userName, formValues.password)
+                .subscribe(data => {
+                    if(data.user) {
+                        this.loginStatus = data.status
+                        this.auth.setCurrentUser(data.user.username);
+                    }else{
+                        this.auth.reset();
+                        this.loginStatus = data.status;
+                    }
+
+                },
+                    error => this.errorMessage = <any>error
+                );
+        }
     }
 }

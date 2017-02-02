@@ -18,7 +18,7 @@ export class BatchListComponent implements OnInit {
     queryStatus: string;
     queryStatusMessage: string;
 
-    constructor(private _mssql: MssqlService) {
+    constructor(private mssql: MssqlService) {
 
     }
 
@@ -59,7 +59,7 @@ export class BatchListComponent implements OnInit {
     }
 
     getBatchData() {
-        this._mssql.getBatchData()
+        this.mssql.getBatchData()
             .subscribe(
                 data => {
                     if(data.name){
