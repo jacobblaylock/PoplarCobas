@@ -68,12 +68,12 @@ export class BatchListComponent implements OnInit {
         if(this.queryStatusMessage){this.queryStatusMessage = '';}
     }
 
-    logout() {
-        this.auth.reset();
-        this.reset();
-        this.resetQueryStatus();
-        this.router.navigate(['/login']);
-    }
+    // logout() {
+    //     this.auth.reset();
+    //     this.reset();
+    //     this.resetQueryStatus();
+    //     this.router.navigate(['/login']);
+    // }
 
     handleSqlError(data: any) {
         if(data.message.indexOf('ECONNREFUSED')>0){

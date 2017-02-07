@@ -1,10 +1,15 @@
 /* Master Styles */
-header, h1 {
+header {
   color: #ffffff;
-  font-size: 200%;
   background-color: #2a3133;
   margin-bottom: 0.5em;
 }
+
+header h1 {
+  font-size: 250%;
+  margin-bottom: 0.5em;
+}
+
 
 div.row {
   padding-bottom: 0.25em;

@@ -1,12 +1,9 @@
-<div class="container-fluid">
-    <h3>Logged in as user {{ this.auth.currentUser }}</h3>
-    <form>
-        <button type="submit" class="btn btn-primary" (click)="logout()">Logout</button>
-    </form>
-</div>
-
 <div *ngIf="errorMessage"  class="container-fluid">
     <div class="alert alert-danger">{{ errorMessage }}</div>
+</div>
+
+<div class="container-fluid page-header">
+    <h2>Batch Review</h2>
 </div>
 
 <div *ngIf="queryStatusMessage && !selectedBatch" class="container-fluid">
@@ -16,7 +13,6 @@
 <div *ngIf="!errorMessage">
 
     <div class="container-fluid">
-        <h2>Batch Review</h2>
         <div *ngIf="batchListCount > 0">
             <div class="row">
                 <div class="col-md-12">
@@ -35,7 +31,9 @@
             <div class="col-md-12">There are currently no batches available to review.</div>
         </div>
     </div>
+
     <div *ngIf="selectedBatch">
         <batch-detail [batchNumber]="selectedBatch" (done)="batchDetailProcessed($event)"></batch-detail>
     </div>
+
 </div>

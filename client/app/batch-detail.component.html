@@ -1,6 +1,6 @@
 <div *ngIf="batchDetails">
     <div class="container-fluid">
-        <h2>Details for Batch {{ batchDetails.batchDateString | date:'dd-MMM-y HH:mm' }} ({{ batchDetails.cases.length}} Cases)<br /><small>This batch was initially ran by user {{ batchDetails.batchRunUser }}</small></h2>
+        <h3>Details for Batch {{ batchDetails.batchDateString | date:'dd-MMM-y HH:mm' }} ({{ batchDetails.cases.length}} Cases)<br /><small>This batch was initially ran by user {{ batchDetails.batchRunUser }}</small></h3>
         <!--<div class="row"></div>-->
         <form  *ngIf="batchDetails.batchReleaseUser">
             <div class="btn-fixed btn-group-vertical">
@@ -11,26 +11,26 @@
     </div>
 
     <div class="container-fluid">
-        <!--<div class="row">
-            <div class="col-md-12">-->
-        <table class="table table-condensed">
-            <tr>
-                <th>Accession Number</th>
-                <th>Test</th>
-                <th>Result</th>
-            </tr>
-            <template ngFor let-case [ngForOf]="batchDetails.cases">
+        <div class="row">
+            <div class="col-md-10">
+                <table class="table table-condensed">
                     <tr>
-                        <td [attr.rowspan]="case.tests.length + 1">{{ case.accessionNumber }}</td>
+                        <th>Accession Number</th>
+                        <th>Test</th>
+                        <th>Result</th>
                     </tr>
-                    <tr *ngFor="let test of case.tests" [class]="flagResult(test)">
-                        <td>{{ test.code }}</td>
-                        <td>{{ test.result }}</td>
-                    </tr>
-            </template>
-        </table>
-            <!--</div>
-        </div>-->
-
+                    <template ngFor let-case [ngForOf]="batchDetails.cases">
+                            <tr>
+                                <td [attr.rowspan]="case.tests.length + 1">{{ case.accessionNumber }}</td>
+                            </tr>
+                            <tr *ngFor="let test of case.tests" [class]="flagResult(test)">
+                                <td>{{ test.code }}</td>
+                                <td>{{ test.result }}</td>
+                            </tr>
+                    </template>
+                </table>
+            </div>
+        </div>
     </div>
+
 </div>
