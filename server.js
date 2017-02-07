@@ -34,7 +34,7 @@ app.use(session(
 require('./server/passport/passport')(app);
 
 
-app.use('/', index);
+app.use('/cobas-app/*', index);
 app.use('/sql', sql);
 app.use('/auth', auth);
 

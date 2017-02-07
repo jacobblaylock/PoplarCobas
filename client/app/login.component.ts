@@ -1,11 +1,11 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { AuthService } from './auth.service';
 
 @Component({
     moduleId: module.id,
-    selector: 'login',
     templateUrl: 'login.component.html',
     styles: [`
         em { float:right; color:#E05C65; padding-left:10px; }
@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit {
     private userName: FormControl;
     private password: FormControl;
 
-    constructor(private auth: AuthService) { }
+    constructor(private auth: AuthService, private router: Router) { }
 
     ngOnInit() {
         this.userName = new FormControl('', Validators.required);
@@ -40,16 +40,10 @@ export class LoginComponent implements OnInit {
 
     login(formValues: any) {
         if (this.loginForm.valid) {
-            this.loginStatus = this.auth.loginUser(formValues.userName, formValues.password);
-        }
-    }
-
-    loginPassport(formValues: any) {
-        if (this.loginForm.valid) {
             this.auth.loginPassport(formValues.userName, formValues.password)
                 .subscribe(data => {
                     if(data.user) {
-                        this.loginStatus = data.status
+                        this.loginStatus = data.status;
                         this.auth.setCurrentUser(data.user.username);
                     }else{
                         this.auth.reset();
@@ -57,7 +51,12 @@ export class LoginComponent implements OnInit {
                     }
 
                 },
-                    error => this.errorMessage = <any>error
+                    error => this.errorMessage = <any>error,
+                    () => {
+                        if(this.auth.currentUser) {
+                            this.router.navigate(['/batch']);
+                        }
+                    }
                 );
         }
     }

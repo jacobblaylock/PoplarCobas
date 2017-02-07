@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <h2>Details for Batch {{ batchDetails.batchDateString | date:'dd-MMM-y HH:mm' }} ({{ batchDetails.cases.length}} Cases)<br /><small>This batch was initially ran by user {{ batchDetails.batchRunUser }}</small></h2>
         <!--<div class="row"></div>-->
-        <form>
+        <form  *ngIf="batchDetails.batchReleaseUser">
             <div class="btn-fixed btn-group-vertical">
                 <button type="submit" class="btn btn-success btn-lg" [ngClass]="{disabled: !batchDetails.batchReleaseUser}" (click)="releaseBatch()">Release Results</button>
                 <button type="submit" class="btn btn-danger btn-lg" [ngClass]="{disabled: !batchDetails.batchReleaseUser}" (click)="rejectBatch()">Reject Results</button>

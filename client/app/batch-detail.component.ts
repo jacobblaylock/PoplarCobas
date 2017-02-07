@@ -19,7 +19,7 @@ export class BatchDetailComponent implements OnInit, OnChanges {
     queryStatus: string;
     queryStatusMessage: string;
 
-    constructor(private mssql: MssqlService, private _auth: AuthService) {
+    constructor(private mssql: MssqlService, private auth: AuthService) {
 
     }
 
@@ -63,7 +63,7 @@ export class BatchDetailComponent implements OnInit, OnChanges {
                 }
             },
             error => this.errorMessage = <any>error,
-            () => this.batchDetails.batchReleaseUser = this._auth.currentUser
+            () => this.batchDetails.batchReleaseUser = this.auth.currentUser
         )
     }
 
