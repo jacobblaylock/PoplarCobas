@@ -10,6 +10,10 @@ import { AuthService } from './auth.service';
     styles: [`
         em { float:right; color:#E05C65; padding-left:10px; }
         .error input {background-color:#E3C3C5;}
+        .noindent {
+            margin-left: 0px;
+            border-left: 0px;
+        }
     `]
 })
 export class LoginComponent implements OnInit {
