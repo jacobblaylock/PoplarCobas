@@ -8,7 +8,7 @@ import { AuthService } from './auth.service';
     selector: 'my-app',
     templateUrl: 'app.component.html'
 })
-export class AppComponent implements OnInit  {
+export class AppComponent implements OnInit {
 
     constructor(private auth: AuthService, private router: Router) {
 
@@ -17,7 +17,6 @@ export class AppComponent implements OnInit  {
     ngOnInit() {
 
     }
-
 
     logout() {
         this.auth.reset();
